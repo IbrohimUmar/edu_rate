@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="uz" data-bs-theme="dark">
+
+<head>
+    <base href="/" />
+    <title>{{ site_config.project_short_name }} – Ro'yxatdan o'tish</title>
+    <meta charset="utf-8" />
+
+    <!-- SEO Meta -->
+    <meta name="description" content="{{ site_config.project_short_desc }}" />
+    <meta name="keywords" content="{{ site_config.project_short_name }}, moddiy qiymat, aktivlar, qiymat boshqaruvi, universitet" />
+    <meta name="author" content="{{ site_config.manufacturer }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:locale" content="uz_UZ" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ site_config.project_short_name }} – Ro'yxatdan o'tish" />
+    <meta property="og:description" content="{{ site_config.project_short_desc }}" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:site_name" content="{{ site_config.project_short_name }}" />
+    <meta property="og:image" content="{{ site_config.logo_main.url }}" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ site_config.project_short_name }} – Ro'yxatdan o'tish" />
+    <meta name="twitter:description" content="{{ site_config.project_short_desc }}" />
+    <meta name="twitter:image" content="{{ site_config.logo_main.url }}" />
+
+    <!-- Canonical link -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}" />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ site_config.logo_favicon.url }}" />
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Coiny&display=swap" />
+
+    <!-- Styles -->
+    <link href="{% static 'plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static '' %}css/custom.css" rel="stylesheet" type="text/css"/>
+
+    <!-- Security -->
+    <script>
+        // Frame-busting to prevent site from being loaded within a frame without permission (click-jacking)
+        if (window.top != window.self) {
+            window.top.location.replace(window.self.location.href);
+        }
+    </script>
+</head>
+	<body id="kt_body" class="app-blank">
+
+<div class="d-flex flex-column flex-root" id="kt_app_root">
+    <!--begin::Authentication - Sign-in -->
+    <div class="d-flex flex-column flex-lg-row flex-column-fluid">
+        <!--begin::Body-->
+        <div class="d-flex flex-column flex-lg-row-fluid w-lg-50 p-4 p-sm-8 p-lg-10 order-2 order-lg-1">
+            <!--begin::Form-->
+            <div class="d-flex flex-center flex-column flex-lg-row-fluid">
+                <!--begin::Wrapper-->
+                <div class="w-100 w-sm-75 w-lg-500px p-4 p-sm-8 p-lg-8">
+                    <!--begin::Form-->
+                    <form class="form" novalidate="novalidate" id="kt_sign_in_form" method="post">
+                        <!--begin::Heading-->
+                        {% csrf_token %}
+                        <div class="text-center mb-5">
+                            <img src="{% static '' %}img/logo1.png" style="max-width: 330px" alt="">
+                            <h1 class="text-gray-900 mb-3 font-coiny fw-normal">{{ site_config.project_short_name }}</h1>
+                            <div class="text-gray-500  fs-6 font-coiny fw-normal">{{ site_config.project_short_desc }}</div>
+                        </div>
+
+                        <hr>
+
+                        <div class="text-center mb-5">
+                            <h5>Ro'yxatdan o'tish</h5>
+                        </div>
+
+                        <div class="fv-row mb-8">
+                            <h6>Email</h6>
+                            <input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent" />
+                        </div>
+
+                        <div class="fv-row mb-3">
+                            <h6>Parol</h6>
+                            <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent" />
+                        </div>
+
+                        <div class="d-grid mt-3 mb-10">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="indicator-label">Ro'yxatdan o'tish</span>
+                            </button>
+                        </div>
+
+                        <div class="row g-3 mb-9">
+                            <div class="col-md-12">
+                                <a href="#" class="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
+                                    <i class="fas fa-key"></i>Hemis orqali kirish
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                    <!--end::Form-->
+                </div>
+                <!--end::Wrapper-->
+            </div>
+            <!--end::Form-->
+
+            <!--begin::Footer-->
+            <div class="w-lg-500px d-flex flex-stack px-10 mx-auto text-center">
+                <h5 class="text-muted text-center font-coiny fw-normal">© <span id="year"></span> {{ site_config.manufacturer }}</h5>
+            </div>
+            <!--end::Footer-->
+        </div>
+        <!--end::Body-->
+    </div>
+    <!--end::Authentication - Sign-in-->
+</div>
+
+
+
+
+
+		<!--end::Root-->
+		<!--begin::Javascript-->
+		<script>var hostUrl = "{% static '' %}";</script>
+		<!--begin::Global Javascript Bundle(mandatory for all pages)-->
+		<script src="{% static '' %}plugins/global/plugins.bundle.js"></script>
+		<script src="{% static '' %}js/scripts.bundle.js"></script>
+		<!--end::Global Javascript Bundle-->
+        <script>
+            document.getElementById("year").textContent = new Date().getFullYear();
+        </script>
+		<!--begin::Custom Javascript(used for this page only)-->
+		<script src="{% static '' %}js/custom/authentication/sign-in/general.js"></script>
+		<!--end::Custom Javascript-->
+	</body>
+	<!--end::Body-->
+</html>
