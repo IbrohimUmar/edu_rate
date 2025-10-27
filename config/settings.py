@@ -26,7 +26,7 @@ SECRET_KEY =  os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
-IS_SERVER = os.getenv("IS_SERVER")
+IS_SERVER = os.getenv("IS_SERVER", "False").lower() == "true"
 
 HEMIS_URL = os.getenv("HEMIS_URL")
 HEMIS_API_TOKEN = os.getenv("HEMIS_API_TOKEN")
@@ -45,11 +45,13 @@ AUTH_USER_MODEL = 'models.User'
 MANUFACTURER="RTTM"
 
 ALLOWED_HOSTS = ["*"]
-if IS_SERVER is 'True':
+
+if IS_SERVER:
     CSRF_TRUSTED_ORIGINS = [
         'http://edurate.namdu.uz',
         'https://edurate.namdu.uz'
     ]
+
 
 DATABASES = {
     'default': {
