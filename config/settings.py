@@ -45,6 +45,11 @@ AUTH_USER_MODEL = 'models.User'
 MANUFACTURER="RTTM"
 
 ALLOWED_HOSTS = ["*"]
+if IS_SERVER is True:
+    CSRF_TRUSTED_ORIGINS = [
+        'http://edurate.namdu.uz',
+        'https://edurate.namdu.uz'
+    ]
 
 
 DATABASES = {
