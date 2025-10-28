@@ -83,7 +83,7 @@ def check_and_send_notifications():
                     message = (
                         "🔔 So'rovnoma\n\n"
                         # f"<b>{point.schedule.employee.full_name()}</b> ustozingizni,\n"
-                        f"1/4. Pedagog <b>{point.schedule.employee.full_name()}</b> \n«<b>{point.schedule.subject.name}</b>» fanidan darsga keldimi?\n"
+                        f"1/4. Pedagog <b>{point.schedule.employee.full_name}</b> \n«<b>{point.schedule.subject.name}</b>» fanidan darsga keldimi?\n"
                         "(ovoz berish majburiy va anonimlik saqlanib qoladi)\n\n"
                         "👉 Pastdagi tugmalardan birini tanlang."
                         # "3 – qoniqarli\n"
