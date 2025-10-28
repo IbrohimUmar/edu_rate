@@ -73,8 +73,26 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'models',
-    'rest_framework'
+    'rest_framework',
+    'django_crontab'
 ]
+
+CRONJOBS = [
+    # talabalar ro'yxatini sinxronlash 2 kunda 1 marta
+    ('* * */2 * *', 'service.sync_hemis.student.student_sync', '>> /home/wadmin/edu_rate/logs/student_sync.log'),
+
+    # xodimlar modelini sinxronlash 2 kunda 1 marta
+    ('* * */2 * *', 'service.sync_hemis.employee.employee_sync', '>> /home/wadmin/edu_rate/logs/employee_sync.log'),
+
+    # ------------------------------Studenr kpi bot
+    # har 5 daqiqda 1 marta talabalarga
+    ('*/5 * * * *', 'service.schedule.schedule_point_notify.check_and_send_notifications', '>> /home/wadmin/edu_rate/logs/check_and_send_notifications.log'),
+
+    # o'quv rejalarni hemi bilan synx qilish 10 kunda 1 marta ishlashi kerak
+    ('0 * * * *', 'service.sync_hemis.schedule.schedule_sync',  '>> /home/wadmin/edu_rate/logs/schedule_sync.log'),
+    ('0 0 * * *', 'service.sync_hemis.schedule.schedule_last_seven_days_sync',  '>> /home/wadmin/edu_rate/logs/schedule_last_seven_days_sync.log'),
+]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -1,3 +1,5 @@
+import datetime
+
 import requests
 from django.db import transaction, IntegrityError
 from requests import Timeout, RequestException
@@ -96,7 +98,7 @@ def employee_sync():
             handle_exception(e)
 
     EmployeeMeta.objects.exclude(meta_id__in=active_meta_data).update(is_active=False)
-    print('Successfully updated employee list')
+    print(f'Successfully updated employee list {datetime.datetime.now()}')
     return True
 
 

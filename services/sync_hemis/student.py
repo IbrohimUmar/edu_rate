@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import transaction, IntegrityError
 import requests
 from models.models.meta import StudentStatus, EducationForm, EducationType, PaymentForm, StudentType, SocialCategory, \
@@ -144,5 +146,5 @@ def student_sync():
             handle_exception(e)
             print(e)
             return False
-    print('Successfully updated student list')
+    print(f'Successfully updated student list {datetime.datetime.now()}')
     return True

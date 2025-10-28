@@ -6,8 +6,7 @@ from django.shortcuts import render, redirect
 # 🔸 Sen ishlatadigan sync funksiyalar
 from services.sync_hemis.employee import employee_sync
 from services.sync_hemis.student import student_sync
-from services.sync_hemis.schedule import schedule_sync
-
+from services.sync_hemis.schedule import schedule_sync, schedule_last_seven_days_sync
 
 # ===========================================================
 # 🔹 GLOBAL LOCK VA STATUS
@@ -56,6 +55,7 @@ def setting_sync(request):
     sync_employee = request.GET.get('sync_employee')
     sync_student = request.GET.get('sync_student')
     sync_schedule = request.GET.get('sync_schedule')
+    sync_schedule_seven_day = request.GET.get('sync_schedule_seven_day')
 
     if sync_employee is not None:
         if run_in_thread(employee_sync, "employee"):
@@ -72,6 +72,12 @@ def setting_sync(request):
     if sync_schedule is not None:
         if run_in_thread(schedule_sync, "schedule"):
             messages.success(request, "📘 O'quv rejalar sinxronizatsiyasi boshlandi.")
+        else:
+            messages.warning(request, f"⚠️ '{current_sync_type['name']}' sinxronizatsiyasi hali tugamagan!")
+
+    if sync_schedule_seven_day is not None:
+        if run_in_thread(schedule_last_seven_days_sync, "sync_schedule_seven_day"):
+            messages.success(request, "📘 O'quv rejalar - kunlik sinxronizatsiyasi boshlandi.")
         else:
             messages.warning(request, f"⚠️ '{current_sync_type['name']}' sinxronizatsiyasi hali tugamagan!")
 
