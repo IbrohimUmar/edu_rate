@@ -68,6 +68,7 @@ def schedule_sync():
         # response = get_schedule_list(page=page, limit=limit)
         data = response['data']
         total_count = data['pagination']['totalCount']
+        print(data['pagination'])
         try:
             with transaction.atomic():
                 for a in response['data']['items']:

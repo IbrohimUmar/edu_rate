@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models.user import User
-from .models.meta import Department, EducationForm
+from .models.meta import Department, EducationForm, Group
 from .models.student_meta import StudentMeta
 from .models.employee_meta import EmployeeMeta
 from .models.schedule import Schedule
@@ -26,6 +26,11 @@ class ScheduleAdmin(admin.ModelAdmin):
                     'group_student_count', 'group_student_login_count']
     list_filter = ['lesson_pair', 'lesson_date']
     search_fields = ['hemis_id']
+
+@admin.register(Group)
+class GroupAdmin(admin.ModelAdmin):
+    list_display = ['code', 'name']
+    search_fields = ['code', 'name']
 
 
 
