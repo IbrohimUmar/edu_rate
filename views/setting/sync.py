@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from services.schedule.schedule_point_notify import check_and_send_notifications
 # 🔸 Sen ishlatadigan sync funksiyalar
 from services.sync_hemis.employee import employee_sync
 from services.sync_hemis.student import student_sync
@@ -56,6 +57,7 @@ def setting_sync(request):
     sync_student = request.GET.get('sync_student')
     sync_schedule = request.GET.get('sync_schedule')
     sync_schedule_seven_day = request.GET.get('sync_schedule_seven_day')
+    check_and_send_notification = request.GET.get('check_and_send_notification')
 
     if sync_employee is not None:
         if run_in_thread(employee_sync, "employee"):
@@ -80,6 +82,15 @@ def setting_sync(request):
             messages.success(request, "📘 O'quv rejalar - kunlik sinxronizatsiyasi boshlandi.")
         else:
             messages.warning(request, f"⚠️ '{current_sync_type['name']}' sinxronizatsiyasi hali tugamagan!")
+
+
+    if check_and_send_notification is not None:
+        if run_in_thread(check_and_send_notifications, "check_and_send_notification"):
+            messages.success(request, "📘 Notification yuborish - Notification yuborish func.")
+        else:
+            messages.warning(request, f"⚠️ '{current_sync_type['name']}' sinxronizatsiyasi hali tugamagan!")
+
+
 
     if request.GET:
         return redirect("setting_sync")
