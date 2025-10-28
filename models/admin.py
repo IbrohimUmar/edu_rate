@@ -39,7 +39,7 @@ class SchedulePointAdmin(admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'hemis_id', 'full_name', 'hemis_id_number', 'type')
+    list_display = ('id', 'hemis_id', 'full_name', 'hemis_id_number', 'type', 'telegram_id')
     list_filter = ('type',)
-    search_fields = ('full_name','hemis_id_number')
+    search_fields = ('full_name','hemis_id_number', 'telegram_id')
     inlines = [StudentMetaInline, EmployeeMetaInline]
