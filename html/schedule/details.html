@@ -1,0 +1,249 @@
+{% extends 'main/main.html' %}
+
+{% block content %}
+<div class="d-flex flex-column flex-column-fluid">
+    <!--begin::Toolbar-->
+    <div id="kt_app_toolbar" class="app-toolbar pt-6 pb-2">
+        <!--begin::Toolbar container-->
+        <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
+            <!--begin::Toolbar wrapper-->
+            <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+                <!--begin::Page title-->
+                <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+                    <!--begin::Title-->
+                    <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
+                        Dars haqida batafsil ma'lumot</h1>
+                    <!--end::Title-->
+                    <!--begin::Breadcrumb-->
+                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0">
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item text-muted">
+                            <a href="{% url 'home' %}" class="text-muted text-hover-primary">Dashboard</a>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item">
+                            <span class="bullet bg-gray-500 w-5px h-2px"></span>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item text-muted">
+                            <a href="{% url 'schedule_list' %}" class="text-muted text-hover-primary">Dars jadvallar</a>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item">
+                            <span class="bullet bg-gray-500 w-5px h-2px"></span>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item text-muted">Dars haqida batafsil</li>
+                        <!--end::Item-->
+                    </ul>
+                    <!--end::Breadcrumb-->
+                </div>
+                <!--end::Page title-->
+                <!--begin::Actions-->
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+
+                </div>
+                <!--end::Actions-->
+            </div>
+            <!--end::Toolbar wrapper-->
+        </div>
+        <!--end::Toolbar container-->
+    </div>
+    <!--end::Toolbar-->
+    <!--begin::Content-->
+    <div id="kt_app_content" class="app-content flex-column-fluid">
+        <!--begin::Content container-->
+        <div id="kt_app_content_container" class="app-container container-fluid">
+            <!--begin::Layout-->
+           <div class="row">
+               <div class="col-md-12">
+                   <div class="card pt-4 mb-6 mb-xl-9">
+                                <!--begin::Card header-->
+                                <div class="card-header border-0">
+                                    <!--begin::Card title-->
+                                    <div class="card-title">
+                                        <h2>Dars haqida</h2>
+                                    </div>
+                                    <!--end::Card title-->
+                                </div>
+                                <!--end::Card header-->
+                                <!--begin::Card body-->
+                                <div class="card-body pt-0 pb-5">
+                                    <!--begin::Table wrapper-->
+                                    <div class="table-responsive">
+                                        <!--begin::Table-->
+                                        <table class="table align-middle table-row-dashed gy-5" id="kt_table_users_login_session">
+                                            <!--begin::Table body-->
+                                            <tbody class="fs-6 fw-semibold text-gray-600">
+                                            <tr>
+                                                <td>Fakultet</td>
+                                                <td>
+                                                    <h6>{{schedule.faculty.name}}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Kafedra</td>
+                                                <td>
+                                                    <h6>{{schedule.department.name}}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Fan</td>
+                                                <td>
+                                                    <h6>{{schedule.subject.name}}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Simester</td>
+                                                <td>
+                                                    <h6>{{schedule.semester.name}}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Guruh</td>
+                                                <td>
+                                                    <h6>{{schedule.group.name}}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Turi</td>
+                                                <td>
+                                                    <h6>{{schedule.training_type.name}}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Pedagog</td>
+                                                <td>
+                                                    <h6>{{schedule.employee.full_name}}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Dars vaqti</td>
+                                                <td>
+                                                    <h6>{{ schedule.lesson_date|date }}
+{{ schedule.lesson_pair.start_time }} dan, {{ schedule.lesson_pair.end_time }} gacha</h6>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                            <!--end::Table body-->
+                                        </table>
+                                        <!--end::Table-->
+                                    </div>
+                                    <!--end::Table wrapper-->
+                                </div>
+                                <!--end::Card body-->
+                            </div>
+               </div>
+                   <div class="col-md-12 mt-5">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="card-title">Talabalar</h6>
+                                </div>
+                                <div class="card-body">
+                                <table id="buttons-datatables" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" data-ordering="false">FIO</th>
+                                                <th class="text-center" data-ordering="false">Holati</th>
+                                                <th class="text-center" data-ordering="false">Pedagog darsga keldimi</th>
+                                                <th class="text-center" data-ordering="false">O'qituvchining nutq va muomala madaniyatini</th>
+                                                <th class="text-center" data-ordering="false">Mavzuning amaliyotga bog'langanligi</th>
+                                                <th class="text-center" data-ordering="false">Yakunlangan darsga shaxsiy qoldirgan bahosi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            {% for s in schedule_point %}
+                                            <tr class="text-center">
+                                            <td>{{ s.student.full_name }}</td>
+                                            <td>
+                                                {% if s.is_teacher_present == '0' %}
+                                                <span class="badge bg-danger">Javob bermadi</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">Javob berdi</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if s.is_teacher_present == '0' %}
+                                                ------------
+                                                {% elif s.is_teacher_present == '1' %}
+                                                <span class="badge bg-success">Ha keldi</span>
+                                                {% elif s.is_teacher_present == '2' %}
+                                                <span class="badge bg-danger">Yo'q kelmadi</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+
+                                                {% if s.teacher_speech_and_culture == '0' %}
+                                                ------------
+                                                {% else %}
+                                                {{ s.get_teacher_speech_and_culture_display }}
+                                                {% endif %}
+
+
+
+                                            </td>
+                                            <td>
+                                                {% if s.topic_practical_relevance == '0' %}
+                                                ------------
+                                                {% elif s.topic_practical_relevance == '1' %}
+                                                <span class="badge bg-success">Ha bo'glangan</span>
+                                                {% elif s.topic_practical_relevance == '2' %}
+                                                <span class="badge bg-danger">Yo'q bog'lanmagan</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if lesson_feedback == '0' %}
+                                                    --------------
+                                                {% else %}
+                                                {{ s.get_lesson_feedback_display }}
+                                                {% endif %}
+                                            </td>
+
+
+                                            </tr>
+                                            {% endfor %}
+
+                                            {% if unregister_students %}
+                                                {% for s in unregister_students %}
+                                                    <tr class="text-center">
+                                                                                            <td>{{ s.user.full_name }}</td>
+                                                                                            <td>
+
+                                                                                                <span class="badge bg-danger">Ro'yxatdan o'tmagan</span>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                ------------
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                ------------
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                ------------
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                ------------
+                                                                                            </td>
+
+
+                                                                                            </tr>
+                                                {% endfor %}
+                                            {% endif %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                   </div>
+                </div>
+  <!-- end page title -->
+
+        </div>
+        <!--end::Content container-->
+    </div>
+</div>
+{% endblock %}

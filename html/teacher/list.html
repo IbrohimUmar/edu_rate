@@ -12,7 +12,7 @@
                     <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
                         <!--begin::Title-->
                         <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
-                            Dars jadvallari ro'yxati</h1>
+                            Pedagoglar ro'yxati</h1>
                         <!--end::Title-->
                         <!--begin::Breadcrumb-->
                         <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0">
@@ -27,7 +27,7 @@
                             </li>
                             <!--end::Item-->
                             <!--begin::Item-->
-                            <li class="breadcrumb-item text-muted">Dars jadvali</li>
+                            <li class="breadcrumb-item text-muted">Pedagoglar</li>
                             <!--end::Item-->
                             <!--begin::Item-->
                             <li class="breadcrumb-item">
@@ -66,28 +66,11 @@
                             <div class="d-flex align-items-center">
                                 <!--begin::Input group-->
                                 <div class="position-relative w-md-400px me-md-2">
-                                                                        <h5 class="text-muted mb-0">Qidiruv</h5>
                                     <input type="text" class="form-control form-control-solid"
                                            name="search"
                                            {% if request.GET.search %}value="{{ request.GET.search }}" {% endif %}
-                                           placeholder="Qidiruv fish bo'yicha">
+                                           placeholder="Qidiruv FISH, Hemis ID bo'yicha">
                                 </div>
-                                <div class="position-relative w-md-400px me-md-2">
-                                    <h5 class="text-muted mb-0">Dars sanasi</h5>
-                                    <input type="date" value="{{ selected_date|date:'Y-m-d' }}" placeholder="Pick date rage" class="form-control form-control-solid "
-                                    name="date">
-
-                                </div>
-                                <div class="position-relative w-md-400px me-md-2">
-                                    <h5 class="text-muted mb-0">Ovoz berganlar bo'yicha</h5>
-                                    <select name="send_answer" class="form-select form-select-solid" >
-                                        <option value="0">--------------</option>
-                                        <option value="1" {% if request.GET.send_answer == '1' %}selected{% endif %}>Faqat ovoz berganlar</option>
-                                        <option value="2" {% if request.GET.send_answer == '2' %}selected{% endif %}>Faqat ovoz berilmaganlari</option>
-                                    </select>
-                                </div>
-                                <!--end::Input group-->
-
                                 <!--begin:Action-->
                                 <div class="d-flex align-items-center">
                                     <button type="submit" class="btn btn-icon btn-lg btn-primary me-1">
@@ -124,9 +107,6 @@
     {#                                <span class="text-gray-500 fs-6">by Recent Updates ↓</span>#}
                                 </h6>
                                 </div>
-                    <form method="get" class="d-inline">
-                        <button type="submit" name="export" value="excel" class=" d-inline btn btn-success"><i class="fas fa-file-excel fs-2"></i> Javob berilganlarni excel export</button>
-                    </form>
                     </div>
 
 
@@ -140,12 +120,8 @@
                                 <thead>
                                 <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
                                     <th>#</th>
-                                    <th class="min-w-250px">Kafedra</th>
+                                    <th class="min-w-250px">Hemis ID</th>
                                     <th class="min-w-250px">FISH</th>
-                                    <th class="min-w-250px">Fan nomi</th>
-                                    <th class="min-w-250px">Ovoz berishi kerak bo'lganlar</th>
-                                    <th class="min-w-250px">Ovoz berganlar soni</th>
-                                    <th class="min-w-250px">Dars sanasi</th>
                                 </tr>
                                 </thead>
                                 <tbody class="fw-semibold text-gray-600">
@@ -153,34 +129,28 @@
                                 {% for i in queryset %}
                                     <tr>
                                         <td>
-                                            <a href="{% url 'schedule_details' i.id %}"
-                                               class="btn btn-icon btn-dark">
+                                            <a href="{% url 'teacher_details' i.id %}"
+                                               class="btn btn-dark">
                                               <i class="la la-info-circle fs-2"></i>
+                                                Ma'lumotlari
+                                            </a>
+
+                                            <a href="{% url 'teacher_schedule_list' i.id %}"
+                                               class="btn btn-dark">
+                                              <i class="la la-chart-bar fs-2"></i>
+                                                Statistika
                                             </a>
 
                                         </td>
                                         <td>
                                             <h6>
-                                                {{ i.department.name }}
+                                                {{ i.hemis_id_number }}
                                             </h6>
                                         </td>
                                         <td>
                                             <h6>
-                                                {{ i.employee.full_name }}
+                                                {{ i.full_name }}
                                             </h6>
-                                        </td>
-                                        <td>
-                                            {{i.subject.name}}
-                                        </td>
-                                        <td>
-                                            {{i.group_student_count_qs}} ta
-                                        </td>
-                                        <td>
-                                            {{i.answer_send_count_qs}} ta
-                                        </td>
-                                        <td>
-                                            {{i.lesson_date|date}} <br>
-                                            <span class="badge  badge-dark">{{ i.lesson_pair.start_time }} dan, {{ i.lesson_pair.end_time }} gacha</span>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -213,17 +183,18 @@
 
                                 {# Raqamlar #}
                                 {% for num in queryset.paginator.page_range %}
-                                    {% if num == queryset.number %}
-                                        <li class="page-item active">
-                                            <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">{{ num }}</a>
-                                        </li>
-                                    {% else %}
-                                        <li class="page-item">
-                                            <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">{{ num }}</a>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-
+                                            {% if num >= queryset.number|add:-2 and num <= queryset.number|add:2 %}
+                                                {% if num == queryset.number %}
+                                                    <li class="page-item active">
+                                                        <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">{{ num }}</a>
+                                                    </li>
+                                                {% else %}
+                                                    <li class="page-item">
+                                                        <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">{{ num }}</a>
+                                                    </li>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
                                 {# Next tugma #}
                                 {% if queryset.has_next %}
                                     <li class="page-item next">
@@ -252,77 +223,4 @@
         </div>
         <!--end::Content-->
     </div>
-
-    <div class="modal fade" tabindex="-1" id="kt_modal_stacked_1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="modal-header">
-                        <h3 class="modal-title">Yangi qiymat turi qo'shish</h3>
-
-                        <!--begin::Close-->
-                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
-                             aria-label="Close">
-                            <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
-                        </div>
-                        <!--end::Close-->
-                    </div>
-
-                    <div class="modal-body">
-                        <label for="name">Qiymat nomini kiriting</label>
-                        <input type="text" id="name" class="form-control" name="name" max="220" required placeholder="Qiymat turining nomini kiriting..">
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Chiqish</button>
-                        <button type="submit" class="btn btn-primary">Qo'shish</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <form id="editForm" method="post">
-        {% csrf_token %}
-        <div class="modal-header">
-          <h5 class="modal-title">O‘zgartirish</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" name="id" id="editId">
-          <input type="hidden" name="type" value="edit">
-          <div class="mb-3">
-            <label for="editName" class="form-label">Nomi</label>
-            <input type="text" class="form-control" name="name" id="editName">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success">Saqlash</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-{% endblock %}
-{% block footer %}
-    <script>
-    const editModal = document.getElementById('editModal')
-        editModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget
-            const id = button.getAttribute('data-id')
-            const name = button.getAttribute('data-name')
-
-            // Form inputlariga yozish
-            document.getElementById('editId').value = id
-            document.getElementById('editName').value = name
-        })
-    </script>
 {% endblock %}

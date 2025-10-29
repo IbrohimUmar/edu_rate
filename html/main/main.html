@@ -4,7 +4,7 @@
 <!--begin::Head-->
 <head>
     <meta charset="utf-8"/>
-    <title>{% block title %}{{ site_config.project_short_name }}{% endblock %}</title>
+    <title>{% block title %}{{ site_config.PROJECT_NAME }}{% endblock %}</title>
     <meta name="description" content="{{ site_config.project_short_desc }}"/>
     <meta name="keywords"
           content="{{ site_config.project_short_name }}, moddiy qiymat, aktivlar, qiymat boshqaruvi, universitet"/>
@@ -21,8 +21,7 @@
 
 
     <link rel="canonical" href="{{ request.build_absolute_uri }}"/>
-
-    <link rel="shortcut icon" href="{{ site_config.logo_favicon.url }}"/>
+    <link rel="shortcut icon" href="{% static '' %}img/fav.svg" />
     <!--begin::Fonts(mandatory for all pages)-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Coiny&display=swap" />
 

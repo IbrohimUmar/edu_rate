@@ -21,13 +21,13 @@
 
 
 
-									<div data-kt-menu-trigger="click" class="menu-item  {% if u == 'schedule_list' %} here show{% endif %} menu-accordion">
+									<div data-kt-menu-trigger="click" class="menu-item  {% if u == 'schedule_list' or u == 'schedule_details' %} here show{% endif %} menu-accordion">
 										<!--begin:Menu link-->
 										<span class="menu-link">
 											<span class="menu-icon">
 												<i class="ki-outline ki-calendar fs-2"></i>
 											</span>
-											<span class="menu-title">O'quv rejalar</span>
+											<span class="menu-title">Dars jadvali</span>
 											<span class="menu-arrow"></span>
 										</span>
 										<!--end:Menu link-->
@@ -36,7 +36,7 @@
 											<!--begin:Menu item-->
 											<div class="menu-item">
 												<!--begin:Menu link-->
-												<a class="menu-link {% if u == 'schedule_list' %}active{% endif %}" href="{% url 'schedule_list' %}"  title="Ro'yxati" >
+												<a class="menu-link {% if u == 'schedule_list' or u == 'schedule_details' %}active{% endif %}" href="{% url 'schedule_list' %}"  title="Ro'yxati" >
 													<span class="menu-bullet">
 														<span class="bullet bullet-dot"></span>
 													</span>
@@ -48,6 +48,34 @@
 										</div>
 										<!--end:Menu sub-->
 									</div>
+									<div data-kt-menu-trigger="click" class="menu-item  {% if u == 'teacher_list' %} here show{% endif %} menu-accordion">
+										<!--begin:Menu link-->
+										<span class="menu-link">
+											<span class="menu-icon">
+												<i class="ki-outline ki-profile-user fs-2"></i>
+											</span>
+											<span class="menu-title">Pedagoglar</span>
+											<span class="menu-arrow"></span>
+										</span>
+										<!--end:Menu link-->
+										<!--begin:Menu sub-->
+										<div class="menu-sub menu-sub-accordion">
+											<!--begin:Menu item-->
+											<div class="menu-item">
+												<!--begin:Menu link-->
+												<a class="menu-link {% if u == 'teacher_list' %}active{% endif %}" href="{% url 'teacher_list' %}"  title="Ro'yxati" >
+													<span class="menu-bullet">
+														<span class="bullet bullet-dot"></span>
+													</span>
+													<span class="menu-title">Ro'yxati</span>
+												</a>
+												<!--end:Menu link-->
+											</div>
+											<!--end:Menu item-->
+										</div>
+										<!--end:Menu sub-->
+									</div>
+
 									<div data-kt-menu-trigger="click" class="menu-item  {% if u == 'setting_sync' %} here show{% endif %} menu-accordion">
 										<!--begin:Menu link-->
 										<span class="menu-link">
