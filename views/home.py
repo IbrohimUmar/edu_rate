@@ -24,6 +24,8 @@ def home(request):
     )
 
 
+    # SchedulePoint.objects.exclude(is_teacher_present='0').update(is_submit_notification=True)
+
     #
     # from django.utils import timezone
     # from datetime import timedelta
