@@ -233,3 +233,4 @@ EcoSystem/prod_settings.py
 /student/migrations
 !/student/migrations/__init__.py
 /cache
+.env

@@ -28,6 +28,6 @@ def login_user(request):
             return redirect('home')
         else:
             return render(request, 'auth/login.html',
-                          {"login": request.POST['login'], 'password': request.POST['password'],
-                           'messages_error': "Login yoki parol not'g'ri"})
+                          {"email": request.POST['email'], 'password': request.POST['password'],
+                           'messages_error': "Login yoki parol not'g'ri iltimos qayta urinib ko'ring."})
     return render(request, 'auth/login.html')

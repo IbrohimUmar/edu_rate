@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib.auth.hashers import check_password, make_password
+
 from .models.user import User
 from .models.meta import Department, EducationForm, Group
 from .models.student_meta import StudentMeta
@@ -48,3 +50,16 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ('type',)
     search_fields = ('full_name','hemis_id_number', 'telegram_id')
     inlines = [StudentMetaInline, EmployeeMetaInline]
+
+    def save_model(self, request, obj, form, change):
+        try:
+            user_database = User.objects.get(pk=obj.pk)
+        except Exception:
+            user_database = None
+        if user_database is None \
+                or not (check_password(form.data['password'], user_database.password)
+                        or user_database.password == form.data['password']):
+            obj.password = make_password(obj.password)
+        else:
+            obj.password = user_database.password
+        super().save_model(request, obj, form, change)
