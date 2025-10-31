@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 
 from models.models.employee_meta import EmployeeMeta
 from models.models.schedule import Schedule
-from models.models.schedule_point import SchedulePoint
+# from models.models.schedule_point import SchedulePoint
 from models.models.student_meta import StudentMeta
 from models.models.user import User
 

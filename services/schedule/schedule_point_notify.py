@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction, IntegrityError
 from django.core.cache import cache
 
-from models.models.schedule_point import SchedulePoint
+from models.models.answer import Answer
 from models.models.user import User
 from services.handle_exception import handle_exception
 
@@ -61,7 +61,7 @@ def check_and_send_notifications():
             notified_ids = set()
             counter = 0
             now = timezone.now()
-            points = SchedulePoint.objects.select_for_update(skip_locked=True).filter(
+            points = Answer.objects.select_for_update(skip_locked=True).filter(
                 is_submit_notification=False,
                 notification_planned_date__lte=now,
                 submission_deadline__gt=now,

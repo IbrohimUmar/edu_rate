@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 import pytz
 
 from models.models.schedule import Schedule
-from models.models.schedule_point import SchedulePoint
 from models.models.student_meta import StudentMeta
 from services.handle_exception import handle_exception
 
@@ -66,70 +65,70 @@ har 3 kunda 1 marta ishlaydi
 '''
 
 def create_schedule_point():
-    now = timezone.now()
-    schedules = Schedule.objects.filter(
-        lesson_date__date=now.date(),   # sadece bugünkü dersi alsın
-        lesson_date__gt=now)
-    '''
-    1. haftalik schedule ni oladi
-    va harbir tg botdan ro'yxatdan o'tgan talabaga create qilib chiqadi yuborish mas faqat create
-    '''
-    try:
-        with transaction.atomic():
-            for schedule in schedules:
-                student_meta_qs = StudentMeta.objects.filter(student_status__code='11',
-                                                      group=schedule.group,
-                                                      user__telegram_id__isnull=False
-                                                      )
-                for data in student_meta_qs:
-                    schedule_point, created = SchedulePoint.objects.update_or_create(
-                        student=data.user,
-                        schedule=schedule,
-                        defaults={
-                            'employee':schedule.employee,
-                            'submission_deadline': calculate_deadline(
-                                schedule.lesson_date, schedule.lesson_pair.start_time
-                            ),
-                            'notification_planned_date': calculate_lesson_end_time(
-                                schedule.lesson_date, schedule.lesson_pair.end_time
-                            )
-                        }
-                    )
-                schedule.is_create_schedule_point = True
-                schedule.save()
-
-    except IntegrityError as e:
-        handle_exception(e)
-    except Exception as e:
-        handle_exception(e)
-    print(f"create_schedule_point cronjob | muvaffaqiyatli yakunlandi sana {now}")
-
+    # now = timezone.now()
+    # schedules = Schedule.objects.filter(
+    #     lesson_date__date=now.date(),   # sadece bugünkü dersi alsın
+    #     lesson_date__gt=now)
+    # '''
+    # 1. haftalik schedule ni oladi
+    # va harbir tg botdan ro'yxatdan o'tgan talabaga create qilib chiqadi yuborish mas faqat create
+    # '''
+    # try:
+    #     with transaction.atomic():
+    #         for schedule in schedules:
+    #             student_meta_qs = StudentMeta.objects.filter(student_status__code='11',
+    #                                                   group=schedule.group,
+    #                                                   user__telegram_id__isnull=False
+    #                                                   )
+    #             for data in student_meta_qs:
+    #                 schedule_point, created = SchedulePoint.objects.update_or_create(
+    #                     student=data.user,
+    #                     schedule=schedule,
+    #                     defaults={
+    #                         'employee':schedule.employee,
+    #                         'submission_deadline': calculate_deadline(
+    #                             schedule.lesson_date, schedule.lesson_pair.start_time
+    #                         ),
+    #                         'notification_planned_date': calculate_lesson_end_time(
+    #                             schedule.lesson_date, schedule.lesson_pair.end_time
+    #                         )
+    #                     }
+    #                 )
+    #             schedule.is_create_schedule_point = True
+    #             schedule.save()
+    #
+    # except IntegrityError as e:
+    #     handle_exception(e)
+    # except Exception as e:
+    #     handle_exception(e)
+    # print(f"create_schedule_point cronjob | muvaffaqiyatli yakunlandi sana {now}")
+    pass
 
 def create_schedule_point_by_student(custom_user, student):
-    now = timezone.now()
-    end_time = now + timedelta(days=6)   # Bitiş zamanı: bugünden 6 gün sonraya kadar (toplam 7 gün aralık)
-
-    schedules = Schedule.objects.filter(group=student.group, lesson_date__gte=now, lesson_date__lte=end_time)
-
-    '''
-    1. shu talabaga oid o'quv rejalarni oladi
-    va mavjud haftadagi qolgan darslarni create qilib chiqadi shu haftaga oid bundan oldiginlarni emas faqat qolganlarini
-    '''
-    try:
-        with transaction.atomic():
-            for schedule in schedules:
-                    schedule_point, create = SchedulePoint.objects.get_or_create(
-                        student=custom_user,
-                        schedule=schedule,
-                        defaults={
-                            'employee':schedule.employee,
-                            'submission_deadline':calculate_deadline(schedule.lesson_date, schedule.lesson_pair.start_time),
-                            'notification_planned_date':calculate_lesson_end_time(schedule.lesson_date, schedule.lesson_pair.end_time)
-                        }
-                    )
-    except IntegrityError as e:
-        handle_exception(e)
-
-    except Exception as e:
-        handle_exception(e)
+    # now = timezone.now()
+    # end_time = now + timedelta(days=6)   # Bitiş zamanı: bugünden 6 gün sonraya kadar (toplam 7 gün aralık)
+    #
+    # schedules = Schedule.objects.filter(group=student.group, lesson_date__gte=now, lesson_date__lte=end_time)
+    #
+    # '''
+    # 1. shu talabaga oid o'quv rejalarni oladi
+    # va mavjud haftadagi qolgan darslarni create qilib chiqadi shu haftaga oid bundan oldiginlarni emas faqat qolganlarini
+    # '''
+    # try:
+    #     with transaction.atomic():
+    #         for schedule in schedules:
+    #                 schedule_point, create = SchedulePoint.objects.get_or_create(
+    #                     student=custom_user,
+    #                     schedule=schedule,
+    #                     defaults={
+    #                         'employee':schedule.employee,
+    #                         'submission_deadline':calculate_deadline(schedule.lesson_date, schedule.lesson_pair.start_time),
+    #                         'notification_planned_date':calculate_lesson_end_time(schedule.lesson_date, schedule.lesson_pair.end_time)
+    #                     }
+    #                 )
+    # except IntegrityError as e:
+    #     handle_exception(e)
+    #
+    # except Exception as e:
+    #     handle_exception(e)
     print("Successful create_schedule_point ")
