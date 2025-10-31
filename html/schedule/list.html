@@ -213,17 +213,18 @@
 
                                 {# Raqamlar #}
                                 {% for num in queryset.paginator.page_range %}
-                                    {% if num == queryset.number %}
-                                        <li class="page-item active">
-                                            <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">{{ num }}</a>
-                                        </li>
-                                    {% else %}
-                                        <li class="page-item">
-                                            <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">{{ num }}</a>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-
+                                            {% if num >= queryset.number|add:-2 and num <= queryset.number|add:2 %}
+                                                {% if num == queryset.number %}
+                                                    <li class="page-item active">
+                                                        <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">{{ num }}</a>
+                                                    </li>
+                                                {% else %}
+                                                    <li class="page-item">
+                                                        <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">{{ num }}</a>
+                                                    </li>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
                                 {# Next tugma #}
                                 {% if queryset.has_next %}
                                     <li class="page-item next">
@@ -253,64 +254,6 @@
         <!--end::Content-->
     </div>
 
-    <div class="modal fade" tabindex="-1" id="kt_modal_stacked_1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="modal-header">
-                        <h3 class="modal-title">Yangi qiymat turi qo'shish</h3>
-
-                        <!--begin::Close-->
-                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
-                             aria-label="Close">
-                            <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
-                        </div>
-                        <!--end::Close-->
-                    </div>
-
-                    <div class="modal-body">
-                        <label for="name">Qiymat nomini kiriting</label>
-                        <input type="text" id="name" class="form-control" name="name" max="220" required placeholder="Qiymat turining nomini kiriting..">
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Chiqish</button>
-                        <button type="submit" class="btn btn-primary">Qo'shish</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <form id="editForm" method="post">
-        {% csrf_token %}
-        <div class="modal-header">
-          <h5 class="modal-title">O‘zgartirish</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" name="id" id="editId">
-          <input type="hidden" name="type" value="edit">
-          <div class="mb-3">
-            <label for="editName" class="form-label">Nomi</label>
-            <input type="text" class="form-control" name="name" id="editName">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success">Saqlash</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 {% endblock %}
 {% block footer %}
     <script>

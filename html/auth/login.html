@@ -72,19 +72,35 @@
                         </div>
 
                         <hr>
-
                         <div class="text-center mb-5">
                             <h5>Ro'yxatdan o'tish</h5>
                         </div>
 
+
+                        {% if messages_error %}
+                        <div class="notice d-flex bg-light-primary rounded border-warning border border-dashed mb-9 p-6">
+                            <!--begin::Icon-->
+                            <i class="fas fa-warning fs-2tx text-warning me-4"></i>        <!--end::Icon-->
+                            <!--begin::Wrapper-->
+                            <div class="d-flex flex-stack flex-grow-1 ">
+                                <!--begin::Content-->
+                                <div class=" fw-semibold">
+                                    <div class="fs-6 text-gray-700 ">{{messages_error}}
+                                    </div>
+                                </div>
+                                <!--end::Content-->
+                            </div>
+                            <!--end::Wrapper-->
+                        </div>
+                        {% endif %}
                         <div class="fv-row mb-8">
                             <h6>Email</h6>
-                            <input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent" />
+                            <input type="text" placeholder="Email" name="email" {% if email %}value="{{email}}"{% endif %} autocomplete="off" class="form-control bg-transparent" />
                         </div>
 
                         <div class="fv-row mb-3">
                             <h6>Parol</h6>
-                            <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent" />
+                            <input type="password" placeholder="Password" name="password" {% if password %}value="{{password}}"{% endif %} autocomplete="off" class="form-control bg-transparent" />
                         </div>
 
                         <div class="d-grid mt-3 mb-10">
