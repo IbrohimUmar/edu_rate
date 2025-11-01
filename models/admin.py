@@ -2,14 +2,13 @@ from django.contrib import admin
 from django.contrib.auth.hashers import check_password, make_password
 
 from .models.user import User
-from .models.meta import Department, EducationForm, Group
+from .models.meta import Department, EducationForm, Group, EducationType, EmploymentForm
 from .models.student_meta import StudentMeta
 from .models.employee_meta import EmployeeMeta
 from .models.schedule import Schedule
-from .models.schedule_point import SchedulePoint
 
 # Register your models here.
-@admin.register(Department, StudentMeta, EmployeeMeta)
+@admin.register(Department, StudentMeta, EmployeeMeta, EducationForm, EmploymentForm, EducationType)
 class DefaultAdmin(admin.ModelAdmin):
     pass
 
@@ -37,11 +36,11 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(SchedulePoint)
-class SchedulePointAdmin(admin.ModelAdmin):
-    list_display = ['student', 'schedule', 'is_submit_notification', 'notification_planned_date', 'notification_sent_at', 'submission_deadline', 'answer_submitted_at']
-    list_editable = ('is_submit_notification', 'answer_submitted_at',)
-    list_filter = ['is_submit_notification']
+# @admin.register(SchedulePoint)
+# class SchedulePointAdmin(admin.ModelAdmin):
+#     list_display = ['student', 'schedule', 'is_submit_notification', 'notification_planned_date', 'notification_sent_at', 'submission_deadline', 'answer_submitted_at']
+#     list_editable = ('is_submit_notification', 'answer_submitted_at',)
+#     list_filter = ['is_submit_notification']
 
 
 @admin.register(User)

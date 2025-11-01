@@ -6,7 +6,7 @@ from django.db.models import Count, Q
 from django.shortcuts import render
 
 from models.models.schedule import Schedule
-from models.models.schedule_point import SchedulePoint
+# from models.models.schedule_point import SchedulePoint
 from models.models.student_meta import StudentMeta
 from models.models.user import User
 from services.schedule.schedule_point import calculate_deadline, calculate_lesson_end_time
@@ -18,10 +18,10 @@ def home(request):
         total_student_count=Count("id"),
         total_registered_count=Count("id", Q(telegram_id__isnull=False)),
     )
-    schedule_point = SchedulePoint.objects.aggregate(
-        total_answers_count=Count("id", filter=~Q(is_teacher_present='0')),
-        total_send_notify_count=Count("id", filter=Q(is_submit_notification=True)),
-    )
+    # schedule_point = SchedulePoint.objects.aggregate(
+    #     total_answers_count=Count("id", filter=~Q(is_teacher_present='0')),
+    #     total_send_notify_count=Count("id", filter=Q(is_submit_notification=True)),
+    # )
 
 
     # SchedulePoint.objects.exclude(is_teacher_present='0').update(is_submit_notification=True)
@@ -87,5 +87,6 @@ def home(request):
 
 
 
-    return render(request, 'home.html', {"schedule_point":schedule_point,
+    return render(request, 'home.html', {
+        # "schedule_point":schedule_point,
                                                             "user_statistic":user_statistic})

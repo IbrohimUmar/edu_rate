@@ -10,9 +10,9 @@ class Survey(models.Model):
         ("2", "Custom"),
     )
     type = models.CharField(max_length=1, choices=type_choice, default="1", null=False, blank=False)
-    education_form = models.ForeignKey(
-        EducationForm,
-        verbose_name="EducationForm - Ta'lim shakli",
+    education_type = models.ForeignKey(
+        EducationType,
+        verbose_name="EducationType - Ta'lim shakli",
         on_delete=models.SET_NULL,
         null=True,
         blank=True

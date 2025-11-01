@@ -48,6 +48,35 @@
 										</div>
 										<!--end:Menu sub-->
 									</div>
+
+									<div data-kt-menu-trigger="click" class="menu-item  {% if u == 'survey_list' or u == 'survey_details' %} here show{% endif %} menu-accordion">
+										<!--begin:Menu link-->
+										<span class="menu-link">
+											<span class="menu-icon">
+												<i class="ki-outline ki-questionnaire-tablet fs-2"></i>
+											</span>
+											<span class="menu-title">So'rovnoma</span>
+											<span class="menu-arrow"></span>
+										</span>
+										<!--end:Menu link-->
+										<!--begin:Menu sub-->
+										<div class="menu-sub menu-sub-accordion">
+											<!--begin:Menu item-->
+											<div class="menu-item">
+												<!--begin:Menu link-->
+												<a class="menu-link {% if u == 'survey_list' or u == 'survey_details' %}active{% endif %}" href="{% url 'survey_list' %}"  title="Ro'yxati" >
+													<span class="menu-bullet">
+
+														<span class="bullet bullet-dot"></span>
+													</span>
+													<span class="menu-title">Ro'yxati</span>
+												</a>
+												<!--end:Menu link-->
+											</div>
+											<!--end:Menu item-->
+										</div>
+										<!--end:Menu sub-->
+									</div>
 									<div data-kt-menu-trigger="click" class="menu-item  {% if u == 'teacher_list' %} here show{% endif %} menu-accordion">
 										<!--begin:Menu link-->
 										<span class="menu-link">

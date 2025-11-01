@@ -46,6 +46,16 @@ class EducationType(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def survey_question_count(self):
+        from models.models.survey import SurveyQuestion
+        return SurveyQuestion.objects.filter(survey__education_type_id=self.id).count()
+
+    @property
+    def student_count(self):
+        from models.models.student_meta import StudentMeta
+        return StudentMeta.objects.filter(education_type__id=self.id).count()
+
 
 class EducationLang(models.Model):
     name = models.CharField(verbose_name="Kafedra nomi: ", max_length=250, null=True, blank=True)

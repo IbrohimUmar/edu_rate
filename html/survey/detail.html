@@ -1,0 +1,240 @@
+{% extends 'main/main.html' %}
+
+{% block content %}
+<div class="d-flex flex-column flex-column-fluid" id="app">
+    <!--begin::Toolbar-->
+    <div id="kt_app_toolbar" class="app-toolbar pt-6 pb-2">
+        <!--begin::Toolbar container-->
+        <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
+            <!--begin::Toolbar wrapper-->
+            <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+                <!--begin::Page title-->
+                <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+                    <!--begin::Title-->
+                    <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
+                        {{education_type.name}} talabalarga so'rovnoma</h1>
+                    <!--end::Title-->
+                    <!--begin::Breadcrumb-->
+                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0">
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item text-muted">
+                            <a href="{% url 'home' %}" class="text-muted text-hover-primary">Dashboard</a>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item">
+                            <span class="bullet bg-gray-500 w-5px h-2px"></span>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item text-muted">
+                            <a href="{% url 'survey_list' %}" class="text-muted text-hover-primary">So'rovnomalar</a>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item">
+                            <span class="bullet bg-gray-500 w-5px h-2px"></span>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item text-muted">O'zgartirish</li>
+                        <!--end::Item-->
+                    </ul>
+                    <!--end::Breadcrumb-->
+                </div>
+                <!--end::Page title-->
+                <!--begin::Actions-->
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+
+                </div>
+                <!--end::Actions-->
+            </div>
+            <!--end::Toolbar wrapper-->
+        </div>
+        <!--end::Toolbar container-->
+    </div>
+    <!--end::Toolbar-->
+    <!--begin::Content-->
+    <div id="kt_app_content" class="app-content flex-column-fluid">
+        <!--begin::Content container-->
+        <div id="kt_app_content_container" class="app-container container-fluid">
+            <!--begin::Layout-->
+
+
+                    <div class="card shadow-sm mb-5">
+                        <div class="card-body">
+                            <div class="mb-4">
+  <h6 class="fw-semibold mb-2">
+    <i class="fa-solid fa-code me-2 text-primary"></i> So‘rovnoma savol matnida ishlatiladigan o‘zgaruvchilar
+  </h6>
+  <p class="small text-muted mb-3">
+    Quyidagi belgilarni savol matnida ishlatsangiz, tizim ularni avtomatik ravishda mos ma’lumot bilan almashtiradi.
+    Masalan: <code>{fan_nomi}</code> → “Matematika”, <code>{ustoz_fish}</code> → “Abdullayev Jamshid Akmalovich”.
+  </p>
+
+  <pre class="  rounded p-3" style="font-size: 13px; white-space: pre-wrap;">
+<code>{fan_nomi}, {fan_kodi}, {ustoz_ismi}, {ustoz_familiyasi}, {ustoz_fish}, {semester_nomi}, {semester_kodi}, {talim_yili},
+{guruh_nomi}, {guruh_kodi}, {fakultet_nomi}, {fakultet_kodi}, {kafedra_nomi}, {kafedra_kodi},
+{dars_sanasi}, {dars_boshlanish_vaqti}, {dars_tugash_vaqti}, {talaba_ismi}, {talaba_familiyasi}, {talaba_fish}
+</code></pre>
+</div>
+                        </div>
+
+
+                    </div>
+
+              <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h4 class="mb-0"><i class="fa-solid fa-clipboard-list me-2"></i>So'rovnoma savollari</h4>
+                  <button @click="addQuestion" class="btn btn-primary">
+                    <i class="fa-solid fa-plus me-1"></i> Savol qo'shish
+                  </button>
+                </div>
+
+                <div class="card-body">
+
+                  <div v-if="questions.length === 0" class="text-center text-muted py-5">
+                    <i class="fa-regular fa-face-smile-beam fa-3x mb-3"></i>
+                    <p>Hozircha savol yo‘q. Boshlash uchun "Savol qo‘shish" tugmasini bosing.</p>
+                  </div>
+
+                  <div v-for="(q, qi) in questions" :key="qi" class="card mb-3 question-card">
+<!--                      <div class="card-header">-->
+<!--                        <h6 class="card-title">[[qi+1]]-savol</h6>-->
+<!--                      </div>-->
+
+
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                          <h4 class="mb-0">[[qi+1]]-savol</h4>
+                          <button @click="removeQuestion(qi)" class="btn btn-light-danger btn-icon" title="O'chirish">
+                            <i class="fa-solid fa-trash me-1"></i>
+                          </button>
+                      </div>
+
+
+                    <div class="card-body">
+                        <label for="question_name" class="form-label">Savol matni</label>
+                        <div class="d-flex mb-3 justify-content-between align-items-center">
+                        <input type="text" id="question_name" v-model="q.text" class="form-control" placeholder="Savol matni...">
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Javob turi</label>
+                        <select v-model="q.answer_type" class="form-select" @change="updateAnswers(q)">
+                          <option disabled value="">Tanlang...</option>
+                          <option value="2">2 javobli (ha / yo‘q)</option>
+                          <option value="3">3 javobli (masalan: yomon / o‘rtacha / yaxshi)</option>
+                        </select>
+                      </div>
+
+                          <div v-if="q.answers.length > 0" class="p-3 border rounded bg-light">
+                                <h6 class="fw-semibold mb-3">
+                                  <i class="fa-solid fa-comment-dots me-1"></i>Javob variantlari
+                                </h6>
+
+                                <div v-for="(a, ai) in q.answers" :key="ai" class="row align-items-center mb-2">
+                                  <div class="col-md-6 mb-2">
+                                    <input type="text" v-model="a.text" class="form-control" placeholder="Javob nomi">
+                                  </div>
+                                  <div class="col-md-6 mb-2">
+                                    <select v-model="a.type" class="form-select">
+                                      <option value="pozitiv">Ijobiy</option>
+                                        <option value="nomar">Normal</option>
+                                        <option value="negativ">Salbiy</option>
+                                    </select>
+                                  </div>
+                                </div>
+
+                                <!-- add/remove tugmalari olib tashlandi -->
+                              </div>
+                    </div>
+                  </div>
+
+                  <div v-if="questions.length" class="text-end mt-4">
+                    <button class="btn btn-success" @click="saveData">
+                      <i class="fa-solid fa-floppy-disk me-1"></i> Saqlash
+                    </button>
+                    </div>
+                    <!--end::Content container-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block header %}
+{% endblock %}
+{% block footer %}
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+  <script>
+  const { createApp, reactive } = Vue;
+
+  createApp({
+      delimiters: ["[[", "]]"],
+    setup() {
+      const questions = reactive([
+        {
+          text: "",
+          answer_type: "",
+          answers: [
+          ],
+        },
+      ]);
+
+      function addQuestion() {
+        questions.push({
+          text: "",
+          answer_type: "",
+          answers: [],
+        });
+      }
+
+      function removeQuestion(index) {
+        questions.splice(index, 1);
+      }
+
+      function addAnswer(qi) {
+        questions[qi].answers.push({ text: "", type: "pozitiv" });
+      }
+
+       function updateAnswers(question) {
+          const type = question.answer_type;
+          if (type === "2") {
+            question.answers = [
+              { text: "Ha", type: "pozitiv" },
+              { text: "Yo‘q", type: "negativ" },
+            ];
+          } else if (type === "3") {
+            question.answers = [
+              { text: "Yomon", type: "negativ" },
+              { text: "O‘rtacha", type: "pozitiv" },
+              { text: "Yaxshi", type: "pozitiv" },
+            ];
+          } else {
+            question.answers = [];
+          }
+        }
+
+      function removeAnswer(qi, ai) {
+        questions[qi].answers.splice(ai, 1);
+      }
+
+      function saveData() {
+        console.log("Yuboriladigan ma'lumot:", JSON.stringify(questions, null, 2));
+        alert("Ma'lumotlar konsolda ko'rsatilmoqda ✅");
+      }
+
+      return {
+        questions,
+        addQuestion,
+        removeQuestion,
+        addAnswer,
+        removeAnswer,
+        updateAnswers,
+        saveData,
+      };
+    },
+  }).mount("#app");
+  </script>
+{% endblock %}
