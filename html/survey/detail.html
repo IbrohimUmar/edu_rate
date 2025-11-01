@@ -83,10 +83,12 @@
 
                     </div>
 
+            <form method="post">
+                {% csrf_token %}
               <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                   <h4 class="mb-0"><i class="fa-solid fa-clipboard-list me-2"></i>So'rovnoma savollari</h4>
-                  <button @click="addQuestion" class="btn btn-primary">
+                  <button @click="addQuestion" class="btn btn-light-primary" type="button">
                     <i class="fa-solid fa-plus me-1"></i> Savol qo'shish
                   </button>
                 </div>
@@ -106,7 +108,7 @@
 
                       <div class="card-header d-flex justify-content-between align-items-center">
                           <h4 class="mb-0">[[qi+1]]-savol</h4>
-                          <button @click="removeQuestion(qi)" class="btn btn-light-danger btn-icon" title="O'chirish">
+                          <button @click="removeQuestion(qi)" type="button"  class="btn btn-light-danger btn-icon" title="O'chirish">
                             <i class="fa-solid fa-trash me-1"></i>
                           </button>
                       </div>
@@ -115,12 +117,12 @@
                     <div class="card-body">
                         <label for="question_name" class="form-label">Savol matni</label>
                         <div class="d-flex mb-3 justify-content-between align-items-center">
-                        <input type="text" id="question_name" v-model="q.text" class="form-control" placeholder="Savol matni...">
+                        <input type="text" id="question_name" required v-model="q.text" class="form-control" placeholder="Savol matni...">
                       </div>
 
                       <div class="mb-3">
                         <label class="form-label">Javob turi</label>
-                        <select v-model="q.answer_type" class="form-select" @change="updateAnswers(q)">
+                        <select v-model="q.answer_type" name="answer_type" class="form-select" @change="updateAnswers(q)">
                           <option disabled value="">Tanlang...</option>
                           <option value="2">2 javobli (ha / yo‘q)</option>
                           <option value="3">3 javobli (masalan: yomon / o‘rtacha / yaxshi)</option>
@@ -134,10 +136,10 @@
 
                                 <div v-for="(a, ai) in q.answers" :key="ai" class="row align-items-center mb-2">
                                   <div class="col-md-6 mb-2">
-                                    <input type="text" v-model="a.text" class="form-control" placeholder="Javob nomi">
+                                    <input type="text" v-model="a.text" required class="form-control" placeholder="Javob nomi">
                                   </div>
                                   <div class="col-md-6 mb-2">
-                                    <select v-model="a.type" class="form-select">
+                                    <select v-model="a.type" required class="form-select">
                                       <option value="pozitiv">Ijobiy</option>
                                         <option value="nomar">Normal</option>
                                         <option value="negativ">Salbiy</option>
@@ -151,13 +153,15 @@
                   </div>
 
                   <div v-if="questions.length" class="text-end mt-4">
-                    <button class="btn btn-success" @click="saveData">
+                    <button class="btn btn-success" @click="saveData" type="submit">
                       <i class="fa-solid fa-floppy-disk me-1"></i> Saqlash
                     </button>
                     </div>
                     <!--end::Content container-->
                 </div>
             </div>
+                <input type="hidden" name="question" :value="postData">
+            </form>
         </div>
     </div>
 </div>
@@ -166,75 +170,79 @@
 {% endblock %}
 {% block footer %}
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script>
+const { createApp } = Vue;
 
-  <script>
-  const { createApp, reactive } = Vue;
+createApp({
+  delimiters: ["[[", "]]"],
 
-  createApp({
-      delimiters: ["[[", "]]"],
-    setup() {
-      const questions = reactive([
+  data() {
+    return {
+      questions: [
         {
           text: "",
           answer_type: "",
-          answers: [
-          ],
-        },
-      ]);
-
-      function addQuestion() {
-        questions.push({
-          text: "",
-          answer_type: "",
           answers: [],
-        });
-      }
+        },
+      ],
+    };
+  },
 
-      function removeQuestion(index) {
-        questions.splice(index, 1);
-      }
-
-      function addAnswer(qi) {
-        questions[qi].answers.push({ text: "", type: "pozitiv" });
-      }
-
-       function updateAnswers(question) {
-          const type = question.answer_type;
-          if (type === "2") {
-            question.answers = [
-              { text: "Ha", type: "pozitiv" },
-              { text: "Yo‘q", type: "negativ" },
-            ];
-          } else if (type === "3") {
-            question.answers = [
-              { text: "Yomon", type: "negativ" },
-              { text: "O‘rtacha", type: "pozitiv" },
-              { text: "Yaxshi", type: "pozitiv" },
-            ];
-          } else {
-            question.answers = [];
-          }
-        }
-
-      function removeAnswer(qi, ai) {
-        questions[qi].answers.splice(ai, 1);
-      }
-
-      function saveData() {
-        console.log("Yuboriladigan ma'lumot:", JSON.stringify(questions, null, 2));
-        alert("Ma'lumotlar konsolda ko'rsatilmoqda ✅");
-      }
-
-      return {
-        questions,
-        addQuestion,
-        removeQuestion,
-        addAnswer,
-        removeAnswer,
-        updateAnswers,
-        saveData,
-      };
+    computed: {
+    // a computed getter
+    postData() {
+        return JSON.stringify(this.questions)
     },
-  }).mount("#app");
-  </script>
+  },
+
+  methods: {
+    addQuestion() {
+      this.questions.push({
+        text: "",
+        answer_type: "",
+        answers: [],
+      });
+    },
+
+    removeQuestion(index) {
+      this.questions.splice(index, 1);
+    },
+
+    addAnswer(qi) {
+      this.questions[qi].answers.push({ text: "", type: "pozitiv" });
+    },
+
+    updateAnswers(question) {
+      const type = question.answer_type;
+      if (type === "2") {
+        question.answers = [
+          { text: "Ha", type: "pozitiv" },
+          { text: "Yo‘q", type: "negativ" },
+        ];
+      } else if (type === "3") {
+        question.answers = [
+          { text: "Yomon", type: "negativ" },
+          { text: "O‘rtacha", type: "pozitiv" },
+          { text: "Yaxshi", type: "pozitiv" },
+        ];
+      } else {
+        question.answers = [];
+      }
+    },
+
+    removeAnswer(qi, ai) {
+      this.questions[qi].answers.splice(ai, 1);
+    },
+
+    saveData() {
+      console.log(
+        "Yuboriladigan ma'lumot:",
+        JSON.stringify(this.questions, null, 2)
+      );
+      alert("Ma'lumotlar konsolda ko'rsatilmoqda ✅");
+    },
+  },
+}).mount("#app");
+</script>
+
 {% endblock %}
