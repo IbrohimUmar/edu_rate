@@ -12,7 +12,7 @@
                 <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
                     <!--begin::Title-->
                     <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
-                        {{survey.education_type.name}} talabalarga so'rovnoma</h1>
+                        {{education_type.name}} talabalarga so'rovnoma qo'shish</h1>
                     <!--end::Title-->
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0">
@@ -37,7 +37,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted">O'zgartirish</li>
+                        <li class="breadcrumb-item text-muted">Qo'shish</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
@@ -54,10 +54,22 @@
         <!--end::Toolbar container-->
     </div>
     <!--end::Toolbar-->
+
+
+
     <!--begin::Content-->
     <div id="kt_app_content" class="app-content flex-column-fluid">
         <!--begin::Content container-->
         <div id="kt_app_content_container" class="app-container container-fluid">
+
+                <div class="alert alert-warning d-flex align-items-center p-5 mb-10">
+                    <i class="ki-duotone ki-shield-tick fs-2hx text-warning me-4"><span class="path1"></span><span class="path2"></span></i>                    <div class="d-flex flex-column">
+                        <h4 class="mb-1 text-warning">Diqqat</h4>
+                        <span>Iltimos, diqqat qiling. So‘rovnoma savollari soni va javob variantlarini bir marta qo'shilgandan keyin
+        o‘zgartirish mumkin emas.</span>
+                    </div>
+                </div>
+
             <!--begin::Layout-->
             <div class="card shadow-sm mb-5">
                 <div class="card-body">
@@ -84,66 +96,14 @@
 
             </div>
 
-
-
             <form method="post">
-
                 {% csrf_token %}
-
-                <div class="card mb-5">
-                    <div class="card-body">
-                        <div class="row">
-
-                            <div class="col-md-12">
-                                <!--begin::Input group-->
-                                    <div class="d-flex flex-stack w-lg-75">
-                                        <!--begin::Label-->
-                                        <div class="me-5">
-                                            <h6 class=" fw-semibold  "><i class="fa-solid fa-warning me-2 text-warning"></i> So'rovnoma aktivmi?</h6>
-                                            <div class="fs-7 fw-semibold text-muted">diqqat {{survey.education_type.name}}yo'nalishidagilar uchun faqat bitta aktiv so'rovnoma bo'lishi sababidan
-                                                aktiv emas holatga otkazsangiz qachonki boshqa {{survey.education_type.name}} bo'yicha aktiv bo'lmagan so'rovnoma bo'lishi kerak </div>
-
-                                        </div>
-                                        <!--end::Label-->
-
-                                        <!--begin::Switch-->
-
-
-
-<!--                                        {% if survey.alternative_active_survey_exists %}-->
-<!--                                        <label class="form-check form-switch form-check-custom form-check-solid">-->
-<!--                                            <input class="form-check-input"  name="is_active" type="checkbox" value="0" disabled />-->
-<!--                                        </label>-->
-<!--                                        {% else %}-->
-<!--                                        <label class="form-check form-switch form-check-custom form-check-solid">-->
-<!--                                            <input class="form-check-input"  name="is_active" type="checkbox" {% if survey.is_active is True %}value="1" checked="checked"{% else %}value="0"{% endif %}/>-->
-<!--                                        </label>-->
-<!--                                        {% endif %}-->
-
-                                        {% if survey.alternative_active_survey_exists %}
-                                        <select name="is_active" class="form-select" disabled>
-                                            <option value="1" {% if survey.is_active is True %}selected{% endif %}>Aktiv</option>
-                                            <option value="0" {% if survey.is_active is False %}selected{% endif %}>Aktiv emas</option>
-                                        </select>
-                                        {% else %}
-
-                                        <select name="is_active" class="form-select">
-                                            <option value="1" {% if survey.is_active is True %}selected{% endif %}>Aktiv</option>
-                                            <option value="0" {% if survey.is_active is False %}selected{% endif %}>Aktiv emas</option>
-                                        </select>
-                                        {% endif %}
-                                        <!--end::Switch-->
-                                    </div>
-                                    <!--end::Input group-->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
                 <div class="card shadow-sm">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="mb-0"><i class="fa-solid fa-clipboard-list me-2"></i>So'rovnoma savollari</h4>
+                        <button @click="addQuestion" class="btn btn-light-primary" type="button">
+                            <i class="fa-solid fa-plus me-1"></i> Savol qo'shish
+                        </button>
                     </div>
 
                     <div class="card-body">
@@ -161,6 +121,10 @@
 
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h4 class="mb-0">[[qi+1]]-savol</h4>
+                                <button @click="removeQuestion(qi)" type="button" class="btn btn-light-danger btn-icon"
+                                        title="O'chirish">
+                                    <i class="fa-solid fa-trash me-1"></i>
+                                </button>
                             </div>
 
 
@@ -174,7 +138,7 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">Javob turi</label>
-                                    <select v-model="q.answer_type" required disabled name="answer_type" class="form-select"
+                                    <select v-model="q.answer_type" required name="answer_type" class="form-select"
                                             @change="updateAnswers(q)">
                                         <option disabled value="">Tanlang...</option>
                                         <option value="2">2 javobli (ha / yo‘q)</option>
@@ -199,6 +163,9 @@
                                             </select>
                                         </div>
                                     </div>
+
+
+                                    <!-- add/remove tugmalari olib tashlandi -->
                                 </div>
                             </div>
                         </div>
@@ -230,8 +197,8 @@
 
         data() {
             return {
-                questions: {{example_question | safe}},
-                }
+                questions: [],
+        }
             ;
         },
 

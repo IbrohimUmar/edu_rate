@@ -18,6 +18,7 @@ class Survey(models.Model):
         blank=True
     )
     name = models.CharField(max_length=255, null=False, blank=False)
+    is_active = models.BooleanField(null=False, blank=False, default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -25,6 +26,14 @@ class Survey(models.Model):
         verbose_name_plural = "Survey - So'rovnoma"
         ordering = ['-created_at']
 
+
+    @property
+    def survey_question_count(self):
+        return SurveyQuestion.objects.filter(survey=self).count()
+
+    @property
+    def alternative_active_survey_exists(self):
+        return Survey.objects.exclude(id=self.id).filter(education_type=self.education_type, is_active=True).exists()
 
 
 class SurveyQuestion(models.Model):
@@ -46,7 +55,7 @@ class SurveyQuestion(models.Model):
 
     class Meta:
         verbose_name_plural = "SurveyQuestion - So'rovnoma savoli"
-        ordering = ['-created_at']
+        ordering = ['id']
 
 
 class SurveyAnswerOption(models.Model):

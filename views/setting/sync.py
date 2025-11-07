@@ -3,12 +3,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from services.handle_exception import handle_exception
+from services.schedule.schedule_point import create_schedule_answer
 from services.schedule.schedule_point_notify import check_and_send_notifications
 # 🔸 Sen ishlatadigan sync funksiyalar
 from services.sync_hemis.employee import employee_sync
 from services.sync_hemis.student import student_sync
 from services.sync_hemis.schedule import schedule_sync, schedule_last_seven_days_sync
-
 # ===========================================================
 # 🔹 GLOBAL LOCK VA STATUS
 # ===========================================================
@@ -37,6 +38,7 @@ def run_in_thread(target_func, sync_type):
             print(f"✅  {sync_type} sinxronizatsiyasi tugadi")
         except Exception as e:
             print(f"❌ {sync_type} sinxronizatsiyada xato:", e)
+            handle_exception(e, False)
         finally:
             current_sync_type["name"] = None
             global_lock.release()
@@ -58,6 +60,7 @@ def setting_sync(request):
     sync_schedule = request.GET.get('sync_schedule')
     sync_schedule_seven_day = request.GET.get('sync_schedule_seven_day')
     check_and_send_notification = request.GET.get('check_and_send_notification')
+    create_schedule_answer_sync = request.GET.get('create_schedule_answer')
 
     if sync_employee is not None:
         if run_in_thread(employee_sync, "employee"):
@@ -82,6 +85,14 @@ def setting_sync(request):
             messages.success(request, "📘 O'quv rejalar - kunlik sinxronizatsiyasi boshlandi.")
         else:
             messages.warning(request, f"⚠️ '{current_sync_type['name']}' sinxronizatsiyasi hali tugamagan!")
+
+
+    if create_schedule_answer_sync is not None:
+        if run_in_thread(create_schedule_answer, "create_schedule_answer"):
+            messages.success(request, "📘 Notification yuborish - Notification yuborish func.")
+        else:
+            messages.warning(request, f"⚠️ '{current_sync_type['name']}' sinxronizatsiyasi hali tugamagan!")
+
 
 
     if check_and_send_notification is not None:

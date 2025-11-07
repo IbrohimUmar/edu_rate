@@ -58,7 +58,15 @@
             <div id="kt_app_content_container" class="app-container container-fluid">
                 <!--begin::Category-->
 
-                <div class="card card-flush">
+                <div>
+                    {% for i in education_type %}
+                    <a class="btn btn-light-success " href="{% url 'survey_create' i.id %}"><i class="fas fa-add"></i> {{i.name}} uchun qo'shish</a>
+                    {% endfor %}
+                    <!--                    <a class="btn btn-light-success "><i class="fas fa-add"></i> Magistr uchun qo'shish</a>-->
+<!--                    <a class="btn btn-light-success "><i class="fas fa-add"></i> Balalavr uchun qo'shish</a>-->
+<!--                    <a class="btn btn-light-success "><i class="fas fa-add"></i> Balalavr uchun qo'shish</a>-->
+                </div>
+                <div class="card card-flush mt-5">
                     <!--begin::Card body-->
                     <br class="mb-2">
                     <div class="card-body pt-0">
@@ -71,20 +79,30 @@
                                     <thead>
                                     <tr class="fw-bold fs-6 text-gray-800 px-7">
                                         <th>#</th>
-                                        <th>Name</th>
+                                        <th>ID</th>
+                                        <th>Nomi</th>
+                                        <th>Holati</th>
                                         <th>Savol soni</th>
-                                        <th>Talaba soni</th>
+                                        <th>Yaratilgan sana</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for i in education_type %}
+                                    {% for i in surveys %}
                                     <tr>
                                         <td>
                                             <a href="{% url 'survey_detail' i.id %}" class="btn btn-icon btn-primary"><i class="fas fa-edit"></i></a>
                                         </td>
+                                        <td>#{{i.id}}</td>
                                         <td>{{i.name}}</td>
+                                        <td>
+                                            {% if i.is_active == True %}
+                                            <span class="badge badge-success">Aktiv</span>
+                                            {% else %}
+                                            <span class="badge badge-danger">Aktiv emas</span>
+                                            {% endif %}
+                                        </td>
                                         <td>{{i.survey_question_count}} ta</td>
-                                        <td>{{i.student_count}} ta</td>
+                                        <td>{{i.created_at}}</td>
                                     </tr>
                                     {% endfor %}
                                     </tbody>

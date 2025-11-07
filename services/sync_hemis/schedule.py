@@ -15,7 +15,7 @@ from models.models.meta import Subject, Semester, EducationYear, EducationLang, 
 from models.models.schedule import Schedule
 from models.models.user import User
 from services.handle_exception import handle_exception
-from services.schedule.schedule_point import create_schedule_point
+from services.schedule.schedule_point import create_schedule_answer
 from services.sync_hemis.student import get_obj_or_create
 from services.timestamp_to_datetime import timestamp_to_datetime
 
@@ -208,7 +208,7 @@ def schedule_sync():
             handle_exception(e)
         # finally:
         #     print(f'Successfully updated schedule : {from_date}')
-    create_schedule_point()
+    create_schedule_answer()
     return True
 
 
