@@ -53,6 +53,11 @@ if IS_SERVER:
         'https://ubsu.edurate.uz',
         'http://ubsu.edurate.uz'
     ]
+    CORS_ORIGIN_WHITELIST = [
+        'https://ubsu.edurate.uz',
+        'http://ubsu.edurate.uz'
+    ]
+    CORS_ALLOW_CREDENTIALS = True
 
 
 DATABASES = {
