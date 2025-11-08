@@ -49,7 +49,9 @@ ALLOWED_HOSTS = ["*"]
 if IS_SERVER:
     CSRF_TRUSTED_ORIGINS = [
         'http://edurate.namdu.uz',
-        'https://edurate.namdu.uz'
+        'https://edurate.namdu.uz',
+        'https://ubsu.edurate.uz',
+        'http://ubsu.edurate.uz'
     ]
 
 
