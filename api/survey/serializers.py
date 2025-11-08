@@ -119,9 +119,7 @@ class AnswerSubmitSerializer(serializers.Serializer):
         answer_id = data["answer_id"]
         questions = data["questions"]
         request = self.context.get('request')
-        print(request)
         user = request.user
-        # student = request.user.student
 
         # 1️⃣ Answer var mı kontrol et
         try:
@@ -129,16 +127,14 @@ class AnswerSubmitSerializer(serializers.Serializer):
         except Answer.DoesNotExist:
             raise serializers.ValidationError("Bunday answer topilmadi.")
 
-        # if answer.student.id != user.id:
-        #     raise serializers.ValidationError("Bu answer_id sizga tegishli emas")
+        if answer.student.id != user.id:
+            raise serializers.ValidationError("Bu answer_id sizga tegishli emas")
 
         if answer.answer_submitted_at is not None:
             raise serializers.ValidationError("Bu dars uchun baho qo'yib bo'lingan.")
 
         if answer.submission_deadline and answer.submission_deadline < timezone.now():
             raise serializers.ValidationError("Bu dars uchun javob berish muddati tugagan.")
-
-
 
         # 2️⃣ Her bir question’u tek tek kontrol et
         for q in questions:
@@ -150,7 +146,6 @@ class AnswerSubmitSerializer(serializers.Serializer):
                 raise serializers.ValidationError(
                     f"Question ID {question_id} topilmadi."
                 )
-
             # SurveyAnswerOption bormi?
             if not SurveyAnswerOption.objects.filter(id=answer_option_id).exists():
                 raise serializers.ValidationError(
@@ -162,26 +157,8 @@ class AnswerSubmitSerializer(serializers.Serializer):
                 raise serializers.ValidationError(
                     f"Savol {question_id} allaqachon javob berilgan."
                 )
-
         data['answer'] = answer
         return data
-
-
-
-
-    # def create(self, validated_data):
-    #     """Yangi javoblarni saqlash"""
-    #     answer = Answer.objects.get(id=validated_data["answer_id"])
-    #     # for q in validated_data["questions"]:
-    #     #     AnswerDetail.objects.create(
-    #     #         answer=answer,
-    #     #         survey_question_id=q["question_id"],
-    #     #         survey_answer_option_id=q["answer_option_id"],
-    #     #     )
-    #     # return answer
-    #     print('ok')
-    #     # return None
-    #     return answer
 
     def update(self, instance, validated_data):
         """Mavjud javoblarni yangilaydi yoki yangisini yaratadi"""

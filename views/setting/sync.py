@@ -89,7 +89,7 @@ def setting_sync(request):
 
     if create_schedule_answer_sync is not None:
         if run_in_thread(create_schedule_answer, "create_schedule_answer"):
-            messages.success(request, "📘 Notification yuborish - Notification yuborish func.")
+            messages.success(request, "So'rovnomalar uchun javob yaratish boshlandi - Notification yuborish func.")
         else:
             messages.warning(request, f"⚠️ '{current_sync_type['name']}' sinxronizatsiyasi hali tugamagan!")
 
