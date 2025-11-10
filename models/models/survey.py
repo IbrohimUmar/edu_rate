@@ -58,6 +58,9 @@ class SurveyQuestion(models.Model):
         ordering = ['id']
 
 
+
+
+
 class SurveyAnswerOption(models.Model):
     type_choice = (
         ("1", "Pozitiv"),

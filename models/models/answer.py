@@ -24,6 +24,9 @@ class Answer(models.Model):
         verbose_name_plural = "Answer - Javob"
 
 
+
+
+
 class AnswerDetail(models.Model):
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, null=True, blank=True)
     survey_question = models.ForeignKey(SurveyQuestion, on_delete=models.SET_NULL, null=True, blank=True)
@@ -32,3 +35,35 @@ class AnswerDetail(models.Model):
     class Meta:
         verbose_name = "AnswerDetail - Savol javobi"
         verbose_name_plural = "AnswerDetail - Savol javoblari"
+
+
+    @property
+    def get_question_context_name(self):
+        s = self.answer.schedule
+        t = s.employee
+        l = s.lesson_pair
+        st = self.answer.student
+        q = self.survey_question
+        context = {
+            "fan_nomi": s.subject.name,
+            "fan_kodi": s.subject.code,
+            "ustoz_ismi": t.first_name,
+            "ustoz_familiyasi": t.second_name,
+            "ustoz_fish": t.full_name,
+            "semester_nomi": s.semester.name,
+            "semester_kodi": s.semester.code,
+            "talim_yili": s.education_year.name,
+            "guruh_nomi": s.group.name,
+            "guruh_kodi": s.group.code,
+            "fakultet_nomi": s.faculty.name,
+            "fakultet_kodi": s.faculty.code,
+            "kafedra_nomi": s.department.name,
+            "kafedra_kodi": s.department.code,
+            "dars_sanasi": s.lesson_date.strftime("%d.%m.%Y"),
+            "dars_boshlanish_vaqti": l.start_time,
+            "dars_tugash_vaqti": l.end_time,
+            "talaba_ismi": st.first_name,
+            "talaba_familiyasi": st.second_name,
+            "talaba_fish": st.full_name,
+        }
+        return q.name.format(**context)

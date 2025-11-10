@@ -59,7 +59,7 @@ class SurveyQuestionSerializer(serializers.ModelSerializer):
     # survey_answer_option = SurveyAnswerOptionForQuestionSerializer()
     class Meta:
         model = SurveyQuestion
-        fields = ["id", "name", "type", "survey_answer_option"]
+        fields = ["id", "type", "survey_answer_option"]
 
 
 
@@ -71,12 +71,15 @@ class SurveyAnswerOptionSerializer(serializers.ModelSerializer):
 
 class AnswerDetailSerializer(serializers.ModelSerializer):
     survey_question = SurveyQuestionSerializer()
+    question_name = serializers.SerializerMethodField()
 
     class Meta:
         model = AnswerDetail
-        fields = ["id", "survey_question"]
+        fields = ["id", "survey_question", 'question_name']
 
 
+    def get_question_name(self, obj):
+        return obj.get_question_context_name
 
 class AnswerListSerializer(serializers.ModelSerializer):
     schedule = ScheduleSerializer()
