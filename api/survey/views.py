@@ -27,19 +27,20 @@ class ActiveAnswerListView(generics.ListAPIView):
 
     def get_queryset(self):
         now = timezone.now()
-        # return (
-        #     Answer.objects.filter(is_submit_notification=True)
-        #     .filter(submission_deadline__gt=now,
-        #             student_id=self.request.user.id)
-        #     .select_related("schedule", "survey", "employee", "student")
-        #     .prefetch_related("answerdetail_set")
-        print(self.request.user.id)
-        an = Answer.objects.filter(student=self.request.user)
-        print(an)
         return (
-            Answer.objects
+            Answer.objects.filter(is_submit_notification=True)
             .filter(submission_deadline__gt=now,
                     student_id=self.request.user.id)
             .select_related("schedule", "survey", "employee", "student")
             .prefetch_related("answerdetail_set")
         )
+        # print(self.request.user.id)
+        # an = Answer.objects.filter(student=self.request.user)
+        # print(an)
+        # return (
+        #     Answer.objects
+        #     .filter(submission_deadline__gt=now,
+        #             student_id=self.request.user.id)
+        #     .select_related("schedule", "survey", "employee", "student")
+        #     .prefetch_related("answerdetail_set")
+        # )
