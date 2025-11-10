@@ -111,7 +111,7 @@ def create_schedule_answer():
     now = timezone.now()
     schedules = Schedule.objects.filter(
         lesson_date__date=now.date(),   # sadece bugünkü dersi alsın
-        lesson_date__gt=now)[:100]
+        lesson_date__gt=now)
     print('schedules', schedules.count())
     '''
     # 1. haftalik schedule ni oladi

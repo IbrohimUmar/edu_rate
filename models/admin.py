@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.hashers import check_password, make_password
 
-from .models.answer import Answer
+from .models.answer import Answer, AnswerDetail
 from .models.user import User
 from .models.meta import Department, EducationForm, Group, EducationType, EmploymentForm
 from .models.student_meta import StudentMeta
@@ -9,10 +9,24 @@ from .models.employee_meta import EmployeeMeta
 from .models.schedule import Schedule
 
 # Register your models here.
-@admin.register(Department, StudentMeta, EmployeeMeta, EducationForm, EmploymentForm, EducationType, Answer)
+@admin.register(Department, StudentMeta, EmployeeMeta, EducationForm, EmploymentForm, EducationType)
 class DefaultAdmin(admin.ModelAdmin):
     pass
 
+
+
+
+class AnswerDetailInline(admin.TabularInline):
+    model = AnswerDetail
+    extra = 1
+
+
+@admin.register(Answer)
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ("id", "student", "employee", "survey", "schedule", "is_submit_notification")
+    list_filter = ("is_submit_notification", "survey")
+    search_fields = ("student__full_name", "employee__full_name")
+    inlines = [AnswerDetailInline]
 
 class StudentMetaInline(admin.TabularInline):
     model = StudentMeta
@@ -21,6 +35,12 @@ class StudentMetaInline(admin.TabularInline):
 class EmployeeMetaInline(admin.TabularInline):
     model = EmployeeMeta
     extra = 0
+
+class AnswerInline(admin.TabularInline):
+    model = Answer
+    extra = 0
+    fk_name = "student"
+
 
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
@@ -49,7 +69,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'hemis_id', 'full_name', 'hemis_id_number', 'type', 'telegram_id')
     list_filter = ('type',)
     search_fields = ('full_name','hemis_id_number', 'telegram_id')
-    inlines = [StudentMetaInline, EmployeeMetaInline]
+    inlines = [StudentMetaInline, EmployeeMetaInline, AnswerInline]
 
     def save_model(self, request, obj, form, change):
         try:
