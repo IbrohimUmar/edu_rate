@@ -27,13 +27,38 @@ class ActiveAnswerListView(generics.ListAPIView):
 
     def get_queryset(self):
         now = timezone.now()
-        return (
+        # survey_id = self.kwargs.get("survey_id", '0')  # <-- URL'den alınıyor
+        survey_id = self.request.query_params.get("survey_id", '0')  # <-- GET parametresi
+
+        queryset = (
             Answer.objects.filter(is_submit_notification=True)
-            .filter(submission_deadline__gt=now,
-                    student_id=self.request.user.id)
+            .filter(submission_deadline__gt=now, student_id=self.request.user.id)
             .select_related("schedule", "survey", "employee", "student")
             .prefetch_related("answerdetail_set")
         )
+        print(survey_id, self.request.query_params)
+        if survey_id is not None and len(survey_id) > 0 and survey_id not in [0, '0']:
+            queryset = queryset.filter(id=survey_id)
+
+        return queryset
+
+
+    # def get_queryset(self):
+    #     now = timezone.now()
+    #     return (
+    #         Answer.objects.filter(is_submit_notification=True)
+    #         .filter(submission_deadline__gt=now,
+    #                 student_id=self.request.user.id)
+    #         .select_related("schedule", "survey", "employee", "student")
+    #         .prefetch_related("answerdetail_set")
+    #     )
+
+
+
+
+
+
+
         # print(self.request.user.id)
         # an = Answer.objects.filter(student=self.request.user)
         # print(an)
