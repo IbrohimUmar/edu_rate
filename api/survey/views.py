@@ -29,13 +29,17 @@ class ActiveAnswerListView(generics.ListAPIView):
         now = timezone.now()
         survey_id = self.request.query_params.get("survey_id", '0')  # <-- GET parametresi
 
+        # queryset = (
+        #     Answer.objects.filter(is_submit_notification=True)
+        #     .filter(submission_deadline__gt=now, student_id=self.request.user.id)
+        #     .select_related("schedule", "survey", "employee", "student")
+        #     .prefetch_related("answerdetail_set")
+        # )
         queryset = (
-            Answer.objects.filter(is_submit_notification=True)
-            .filter(submission_deadline__gt=now, student_id=self.request.user.id)
+            Answer.objects.filter(submission_deadline__gt=now, student_id=self.request.user.id)
             .select_related("schedule", "survey", "employee", "student")
             .prefetch_related("answerdetail_set")
         )
-        print(survey_id, self.request.query_params)
         if survey_id is not None and len(survey_id) > 0 and survey_id not in [0, '0']:
             queryset = queryset.filter(id=survey_id)
 
