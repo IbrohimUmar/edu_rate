@@ -87,19 +87,21 @@ def check_and_send_notifications():
                     answer_detail = AnswerDetail.objects.filter(answer=point).first()
                     survey_answer_options = SurveyAnswerOption.objects.filter(question=answer_detail.survey_question)
                     for survey_answer_option in survey_answer_options:
-                        icon = "🔵"
+                        icon = "🟡"
                         if survey_answer_option.type == '1':
-                            icon = "✅"
+                            icon = "🟢"
                         elif survey_answer_option.type == '3':
-                            icon = "❌"
+                            icon = "🔴"
                         inline_keyboards.append({
                             'text': f"{icon} {survey_answer_option.name}",
                             "callback_data": f"dyn_start:{point.id}:{answer_detail.id}:{survey_answer_option.id}"
                         })
 
+                    message = f"<b>So'rovnoma </b> : 1/{AnswerDetail.objects.filter(answer=point).count()}\n{answer_detail.get_question_context_name}"
                     # success = async_to_sync(send_telegram_notification)(tg_chat_id, answer_detail.get_question_context_name, survey_answer_options)
-                    success = async_to_sync(send_telegram_notification)(tg_chat_id, answer_detail.get_question_context_name, inline_keyboards)
-                    print(success, 'success')
+                    success = async_to_sync(send_telegram_notification)(tg_chat_id, message, inline_keyboards)
+                    # success = async_to_sync(send_telegram_notification)('6937180', message, inline_keyboards)
+                    # print(success, 'success')
                     if success:
                         print("success bo'ldi")
                         print(inline_keyboards)

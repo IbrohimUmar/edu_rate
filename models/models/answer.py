@@ -59,7 +59,8 @@ class AnswerDetail(models.Model):
             "fakultet_kodi": s.faculty.code,
             "kafedra_nomi": s.department.name,
             "kafedra_kodi": s.department.code,
-            "dars_sanasi": s.lesson_date.strftime("%d.%m.%Y"),
+            # "dars_sanasi": s.lesson_date.strftime("%d.%m.%Y"),
+            "dars_sanasi": self.format_uzbek_date(s.lesson_date),
             "dars_boshlanish_vaqti": l.start_time,
             "dars_tugash_vaqti": l.end_time,
             "talaba_ismi": st.first_name,
@@ -67,3 +68,12 @@ class AnswerDetail(models.Model):
             "talaba_fish": st.full_name,
         }
         return q.name.format(**context)
+
+
+
+    def format_uzbek_date(self, date):
+        UZ_MONTHS = [
+            "yanvar", "fevral", "mart", "aprel", "may", "iyun",
+            "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"
+        ]
+        return f"{date.year} yil {date.day}-{UZ_MONTHS[date.month - 1]}"
