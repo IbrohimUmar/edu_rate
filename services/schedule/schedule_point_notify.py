@@ -97,7 +97,7 @@ def check_and_send_notifications():
                             "callback_data": f"dyn_start:{point.id}:{answer_detail.id}:{survey_answer_option.id}"
                         })
 
-                    message = f"<b>So'rovnoma </b> : 1/{AnswerDetail.objects.filter(answer=point).count()}\n{answer_detail.get_question_context_name}"
+                    message = f"<b>📊 So'rovnoma </b> : 1/{AnswerDetail.objects.filter(answer=point).count()}\n{answer_detail.get_question_context_name}"
                     # success = async_to_sync(send_telegram_notification)(tg_chat_id, answer_detail.get_question_context_name, survey_answer_options)
                     success = async_to_sync(send_telegram_notification)(tg_chat_id, message, inline_keyboards)
                     # success = async_to_sync(send_telegram_notification)('6937180', message, inline_keyboards)
