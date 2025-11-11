@@ -120,36 +120,37 @@ def create_schedule_answer():
     try:
         with transaction.atomic():
             for schedule in schedules:
-                # student_meta_qs = StudentMeta.objects.filter(
-                #     student_status__code='11', group=schedule.group,
-                #                                       user__telegram_id__isnull=False
-                #                                       )
                 student_meta_qs = StudentMeta.objects.filter(
-                    student_status__code='11', group=schedule.group)
-                for data in student_meta_qs:
-                    survey = Survey.objects.filter(education_type=data.education_type, is_active=True).first()
-                    if survey:
-                        answer, created = Answer.objects.update_or_create(
-                            student=data.user,
-                            schedule=schedule,
-                            survey=survey,
-                            defaults={
-                                'employee':schedule.employee,
-                                'submission_deadline': calculate_deadline(
-                                    schedule.lesson_date, schedule.lesson_pair.start_time
-                                ),
-                                'notification_planned_date': calculate_lesson_end_time(
-                                    schedule.lesson_date, schedule.lesson_pair.end_time
-                                )
-                            }
-                        )
-
-                        survey_question = SurveyQuestion.objects.filter(survey=survey)
-                        for question in survey_question:
-                            AnswerDetail.objects.update_or_create(
-                                answer=answer,
-                                survey_question=question,
+                    student_status__code='11', group=schedule.group,
+                                                      user__telegram_id__isnull=False
+                                                      )
+                # student_meta_qs = StudentMeta.objects.filter(
+                #     student_status__code='11', group=schedule.group)
+                if student_meta_qs:
+                    for data in student_meta_qs:
+                        survey = Survey.objects.filter(education_type=data.education_type, is_active=True).first()
+                        if survey:
+                            answer, created = Answer.objects.update_or_create(
+                                student=data.user,
+                                schedule=schedule,
+                                survey=survey,
+                                defaults={
+                                    'employee':schedule.employee,
+                                    'submission_deadline': calculate_deadline(
+                                        schedule.lesson_date, schedule.lesson_pair.start_time
+                                    ),
+                                    'notification_planned_date': calculate_lesson_end_time(
+                                        schedule.lesson_date, schedule.lesson_pair.end_time
+                                    )
+                                }
                             )
+
+                            survey_question = SurveyQuestion.objects.filter(survey=survey)
+                            for question in survey_question:
+                                AnswerDetail.objects.update_or_create(
+                                    answer=answer,
+                                    survey_question=question,
+                                )
 
                 schedule.is_create_schedule_point = True
                 schedule.save()

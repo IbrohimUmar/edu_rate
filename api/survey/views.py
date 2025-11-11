@@ -27,7 +27,6 @@ class ActiveAnswerListView(generics.ListAPIView):
 
     def get_queryset(self):
         now = timezone.now()
-        # survey_id = self.kwargs.get("survey_id", '0')  # <-- URL'den alınıyor
         survey_id = self.request.query_params.get("survey_id", '0')  # <-- GET parametresi
 
         queryset = (
