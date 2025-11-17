@@ -126,6 +126,9 @@ TEMPLATES = [
                 "config.context_processors.config_context",
 
             ],
+            'libraries':  {
+                'dict_filters': 'config.templatetags.dict_filters',
+            }
         },
     },
 ]

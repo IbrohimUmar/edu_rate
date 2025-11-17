@@ -124,11 +124,10 @@ def create_schedule_answer():
                     student_status__code='11', group=schedule.group,
                                                       user__telegram_id__isnull=False
                                                       )
-                # student_meta_qs = StudentMeta.objects.filter(
-                #     student_status__code='11', group=schedule.group)
+
+                survey = schedule.get_active_survey
                 if student_meta_qs:
                     for data in student_meta_qs:
-                        survey = Survey.objects.filter(education_type=data.education_type, is_active=True).first()
                         if survey:
                             answer, created = Answer.objects.update_or_create(
                                 student=data.user,
@@ -152,6 +151,7 @@ def create_schedule_answer():
                                     survey_question=question,
                                 )
 
+                schedule.survey = survey
                 schedule.is_create_schedule_point = True
                 schedule.save()
 

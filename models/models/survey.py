@@ -1,7 +1,6 @@
 from django.db import models
 from models.models.meta import Subject, Semester, EducationYear, Group, Department, TrainingType, LessonPair, \
     EducationType, EducationForm
-from models.models.schedule import Schedule
 from models.models.user import User
 
 class Survey(models.Model):
@@ -49,6 +48,7 @@ class SurveyQuestion(models.Model):
         null=True,
         blank=True
     )
+    order_position = models.PositiveIntegerField(default=0, db_index=True)
     name = models.CharField(max_length=255, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

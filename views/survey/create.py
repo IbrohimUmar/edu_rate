@@ -25,15 +25,14 @@ def survey_create(request, id):
             with transaction.atomic():
                 r = request.POST
                 question_data = json.loads(r['question'])
-
                 survey = Survey.objects.create(
                     type='1',
                     education_type=education_type,
                     name=f"{education_type.name} talabasi darslari uchun so'rovnoma"
                 )
-
-                for q in question_data:
+                for index, q in enumerate(question_data, start=1):
                     survey_question = SurveyQuestion.objects.create(
+                        order_position=index,
                         type=q.get('answer_type', '1'),
                         survey=survey,
                         name=q.get('text')
@@ -46,7 +45,6 @@ def survey_create(request, id):
                             name=name,
                             type=type_
                         )
-
                 messages.success(request, "Qo'shildi")
                 return redirect("survey_list")
         except Exception as e:

@@ -1,9 +1,18 @@
 from django.db import models
+
 from models.models.meta import Subject, Semester, EducationYear, Group, Department, TrainingType, LessonPair
+from models.models.survey import Survey
 from models.models.user import User
 
 class Schedule(models.Model):
     hemis_id = models.IntegerField(unique=True, null=False, blank=False)
+    survey = models.ForeignKey(
+        Survey,
+        verbose_name="Survey",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
     subject = models.ForeignKey(
         Subject,
         verbose_name="Fan",
@@ -76,6 +85,23 @@ class Schedule(models.Model):
         ordering = ['-created_at']
 
 
+    @property
+    def get_active_survey(self):
+        from models.models.student_meta import StudentMeta
+        active_student = (
+            StudentMeta.objects
+            .filter(group=self.group)
+            .only("education_type")  # sadece gereken alanı al
+            .first()
+        )
+        if not active_student:
+            return None
+
+        return (
+            Survey.objects
+            .filter(education_type=active_student.education_type, is_active=True)
+            .first()
+        )
 
     @property
     def group_student_count(self):
@@ -89,5 +115,27 @@ class Schedule(models.Model):
 
     @property
     def answer_send_count(self):
-        from .schedule_point import SchedulePoint
-        return SchedulePoint.objects.filter(schedule_id=self.id).exclude(is_teacher_present='0').count()
+        from .answer import Answer
+        return Answer.objects.filter(schedule_id=self.id).exclude(is_teacher_present='0').count()
+
+    @property
+    def get_answers(self):
+        from .answer import Answer
+        return Answer.objects.filter(schedule_id=self.id)
+
+    @property
+    def get_answers_map(self):
+        answers = self.get_answers.prefetch_related(
+            'answerdetail_set',
+            'answerdetail_set__survey_answer_option',
+            'answerdetail_set__survey_question'
+        )
+        answer_map = {}
+        for answer in answers:
+            detail_map = {}
+            for detail in answer.answerdetail_set.all():  # ❗ Yeni sorgu çalıştırmaz
+                if detail.survey_question_id and detail.survey_answer_option:
+                    detail_map[detail.survey_question_id] = detail
+
+            answer_map[answer.student_id] = detail_map
+        return answer_map

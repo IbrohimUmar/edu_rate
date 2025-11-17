@@ -1,4 +1,5 @@
 {% extends 'main/main.html' %}
+{% load dict_filters %}
 
 {% block content %}
 <div class="d-flex flex-column flex-column-fluid">
@@ -148,63 +149,38 @@
                                         <thead>
                                             <tr>
                                                 <th class="text-center" data-ordering="false">FIO</th>
-                                                <th class="text-center" data-ordering="false">Holati</th>
-                                                <th class="text-center" data-ordering="false">Pedagog darsga keldimi</th>
-                                                <th class="text-center" data-ordering="false">O'qituvchining nutq va muomala madaniyatini</th>
-                                                <th class="text-center" data-ordering="false">Mavzuning amaliyotga bog'langanligi</th>
-                                                <th class="text-center" data-ordering="false">Yakunlangan darsga shaxsiy qoldirgan bahosi</th>
+                                                <th class="text-center" data-ordering="false">Javob yuborgan sana</th>
+
+
+                                                {% for i in survey_questions %}
+                                                <th class="text-center" data-ordering="false">{{i.name}}</th>
+                                                {% endfor %}
                                             </tr>
                                         </thead>
-                                        <tbody>
-
-                                            {% for s in schedule_point %}
+                                           <tbody>
+                                            {% for s in answers %}
                                             <tr class="text-center">
-                                            <td>{{ s.student.full_name }}</td>
-                                            <td>
-                                                {% if s.is_teacher_present == '0' %}
-                                                <span class="badge bg-danger">Javob bermadi</span>
-                                                {% else %}
-                                                    <span class="badge bg-success">Javob berdi</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {% if s.is_teacher_present == '0' %}
-                                                ------------
-                                                {% elif s.is_teacher_present == '1' %}
-                                                <span class="badge bg-success">Ha keldi</span>
-                                                {% elif s.is_teacher_present == '2' %}
-                                                <span class="badge bg-danger">Yo'q kelmadi</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-
-                                                {% if s.teacher_speech_and_culture == '0' %}
-                                                ------------
-                                                {% else %}
-                                                {{ s.get_teacher_speech_and_culture_display }}
-                                                {% endif %}
-
-
-
-                                            </td>
-                                            <td>
-                                                {% if s.topic_practical_relevance == '0' %}
-                                                ------------
-                                                {% elif s.topic_practical_relevance == '1' %}
-                                                <span class="badge bg-success">Ha bo'glangan</span>
-                                                {% elif s.topic_practical_relevance == '2' %}
-                                                <span class="badge bg-danger">Yo'q bog'lanmagan</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {% if lesson_feedback == '0' %}
-                                                    --------------
-                                                {% else %}
-                                                {{ s.get_lesson_feedback_display }}
-                                                {% endif %}
-                                            </td>
-
-
+                                                <td>{{ s.student.full_name }}</td>
+                                                <td>
+                                                    {% if s.answer_submitted_at %}
+                                                    {{s.answer_submitted_at}}
+                                                    {% else %}
+                                                    -----------------
+                                                    {% endif %}
+                                                </td>
+                                                {% for q in survey_questions %}
+                                                    <td>
+                                                        {% with student_answers=answer_map|get_item:s.student_id %}
+                                                            {% if student_answers %}
+                                                                    {% with student_answer_this_question=student_answers|get_item:q.id|default:"-" %}
+                                                                             <span class="badge badge-lg {% if student_answer_this_question.survey_answer_option.type == '1' %}badge-success{% elif student_answer_this_question.survey_answer_option.type == '2' %}badge-warning{% elif student_answer_this_question.survey_answer_option.type == '3' %}badge-danger{% endif %}">{{student_answer_this_question.survey_answer_option.name}}</span>
+                                                                    {% endwith %}
+                                                            {% else %}
+                                                                -
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                    </td>
+                                                {% endfor %}
                                             </tr>
                                             {% endfor %}
 
@@ -213,27 +189,16 @@
                                                     <tr class="text-center">
                                                                                             <td>{{ s.user.full_name }}</td>
                                                                                             <td>
-
                                                                                                 <span class="badge bg-danger">Ro'yxatdan o'tmagan</span>
                                                                                             </td>
+                                                                                        {% for i in survey_questions %}
                                                                                             <td>
                                                                                                 ------------
                                                                                             </td>
-                                                                                            <td>
-                                                                                                ------------
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                ------------
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                ------------
-                                                                                            </td>
-
-
+                                                                                        {% endfor %}
                                                                                             </tr>
                                                 {% endfor %}
                                             {% endif %}
-
                                         </tbody>
                                     </table>
                                 </div>

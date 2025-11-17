@@ -47,8 +47,8 @@ def teacher_schedule_list(request, id):
         .annotate(
             group_student_count_qs=Count("group__student", distinct=True),
             answer_send_count_qs=Count(
-                "schedulepoint",
-                filter=~Q(schedulepoint__is_teacher_present="0"),  # sadece cevap gönderenler
+                "answer",
+                filter=Q(answer__answer_submitted_at__isnull=False),  # sadece cevap gönderenler
                 distinct=True
             )
         )
