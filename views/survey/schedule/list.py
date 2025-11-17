@@ -16,17 +16,19 @@ from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 
+from models.models.answer import AnswerDetail
 from models.models.schedule import Schedule
 from django.db.models import Count, Q
 
+from models.models.survey import Survey, SurveyQuestion, SurveyAnswerOption
 # from models.models.schedule_point import SchedulePoint
 from models.models.user import User
 from views.schedule.list import export_schedule_to_excel
 
 
 @login_required(login_url='login')
-def teacher_schedule_list(request, id):
-    teacher = get_object_or_404(User, id=id, type='2')
+def survey_schedule_list(request, id):
+    survey = get_object_or_404(Survey, id=id)
     search_query = request.GET.get('search', '').strip()
     export_to_excel = request.GET.get('export') == 'excel'
     selected_date = None
@@ -37,7 +39,7 @@ def teacher_schedule_list(request, id):
     # schedules = Schedule.objects.filter(employee=teacher,
     #                                     lesson_date__date=selected_date
     #                                     ).order_by('lesson_date')
-    schedules = Schedule.objects.filter(employee=teacher).order_by('-lesson_date')
+    schedules = Schedule.objects.filter(survey=survey).order_by('-lesson_date')
 
     if date_str:
         schedules = schedules.filter(lesson_date__date=selected_date)
@@ -65,8 +67,33 @@ def teacher_schedule_list(request, id):
             Q(employee__second_name__icontains=search_query) |
             Q(employee__third_name__icontains=search_query)
         )
-    # if export_to_excel:
-    #     return export_schedule_to_excel(schedules)
+    if export_to_excel:
+        data = []
+        for s in schedules:
+            questions = []
+            survey_questions = SurveyQuestion.objects.filter(survey=s.survey).order_by("order_position")
+            for q in survey_questions:
+                question_answer_count = []
+                survey_question_options = SurveyAnswerOption.objects.filter(question=q)
+                for o in survey_question_options:
+                    count = AnswerDetail.objects.filter(survey_question=q, answer__schedule=s.id,
+                                                        survey_answer_option=o).count()
+                    question_answer_count.append({
+                        'id': o.id, 'name': o.name, 'type': o.type,
+                        'send_count': count
+                    })
+                questions.append(
+                    {"question_id": q.id, 'answers': question_answer_count}
+                )
+            data.append(
+                {
+                    'schedule_id': s.id,
+                    'schedule': s,
+                    'questions_and_answer_count': questions
+                }
+            )
+        # return export_schedule_to_excel(schedules, survey)
+        return export_schedule_to_excel(data, survey)
 
     page = request.GET.get('page', 1)
     paginator = Paginator(schedules, 50)  # sahifada 25 ta qator
@@ -77,4 +104,4 @@ def teacher_schedule_list(request, id):
         'queryset_count': queryset_count,
         'selected_date': selected_date
     }
-    return render(request, "teacher/schedule/list.html", context)
+    return render(request, "survey/schedule/list.html", context)

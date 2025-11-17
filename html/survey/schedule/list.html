@@ -1,5 +1,4 @@
 {% extends 'main/main.html' %}
-
 {% block content %}
     <div class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
@@ -12,7 +11,7 @@
                     <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
                         <!--begin::Title-->
                         <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
-                            Dars jadvallari ro'yxati</h1>
+                            So'rovnoma dars jadvallari ro'yxati</h1>
                         <!--end::Title-->
                         <!--begin::Breadcrumb-->
                         <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0">
@@ -25,9 +24,10 @@
                             <li class="breadcrumb-item">
                                 <span class="bullet bg-gray-500 w-5px h-2px"></span>
                             </li>
-                            <!--end::Item-->
-                            <!--begin::Item-->
-                            <li class="breadcrumb-item text-muted">Dars jadvali</li>
+
+                            <li class="breadcrumb-item text-muted">
+                                <a href="{% url 'survey_list' %}" class="text-muted text-hover-primary">So'rovnomalar ro'yxati</a>
+                            </li>
                             <!--end::Item-->
                             <!--begin::Item-->
                             <li class="breadcrumb-item">
@@ -35,7 +35,8 @@
                             </li>
                             <!--end::Item-->
                             <!--begin::Item-->
-                            <li class="breadcrumb-item text-muted">Ro'yxati</li>
+                            <li class="breadcrumb-item text-muted">So'rovnoma dars jadvallari ro'yxati</li>
+                            <!--end::Item-->
                             <!--end::Item-->
                         </ul>
                         <!--end::Breadcrumb-->
@@ -64,17 +65,9 @@
                         <div class="card-body">
                             <!--begin::Compact form-->
                             <div class="d-flex align-items-center">
-                                <!--begin::Input group-->
-                                <div class="position-relative w-md-400px me-md-2">
-                                                                        <h5 class="text-muted mb-0">Qidiruv</h5>
-                                    <input type="text" class="form-control form-control-solid"
-                                           name="search"
-                                           {% if request.GET.search %}value="{{ request.GET.search }}" {% endif %}
-                                           placeholder="Qidiruv fish bo'yicha">
-                                </div>
                                 <div class="position-relative w-md-400px me-md-2">
                                     <h5 class="text-muted mb-0">Dars sanasi</h5>
-                                    <input type="date" value="{{ selected_date|date:'Y-m-d' }}" placeholder="Pick date rage" class="form-control form-control-solid "
+                                    <input type="date" {% if selected_date is not None %}value="{{ selected_date|date:'Y-m-d' }}"{% endif %} placeholder="Pick date rage" class="form-control form-control-solid "
                                     name="date">
 
                                 </div>
@@ -124,9 +117,9 @@
     {#                                <span class="text-gray-500 fs-6">by Recent Updates ↓</span>#}
                                 </h6>
                                 </div>
-<!--                    <form method="get" class="d-inline">-->
-<!--                        <button type="submit" name="export" value="excel" class=" d-inline btn btn-success"><i class="fas fa-file-excel fs-2"></i> Javob berilganlarni excel export</button>-->
-<!--                    </form>-->
+                    <form method="get" class="d-inline">
+                        <button type="submit" name="export" value="excel" class=" d-inline btn btn-success"><i class="fas fa-file-excel fs-2"></i> Javob berilganlarni excel export</button>
+                    </form>
                     </div>
 
 
@@ -253,19 +246,5 @@
         </div>
         <!--end::Content-->
     </div>
-
-{% endblock %}
-{% block footer %}
-    <script>
-    const editModal = document.getElementById('editModal')
-        editModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget
-            const id = button.getAttribute('data-id')
-            const name = button.getAttribute('data-name')
-
-            // Form inputlariga yozish
-            document.getElementById('editId').value = id
-            document.getElementById('editName').value = name
-        })
-    </script>
+    </div>
 {% endblock %}

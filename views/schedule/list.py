@@ -63,29 +63,29 @@ def schedule_list(request):
         )
 
 
-    data = []
-    for s in schedules:
-        questions = []
-        survey_questions = SurveyQuestion.objects.filter(survey=s.survey).order_by("order_position")
-        for q in survey_questions:
-            question_answer_count = []
-            survey_question_options = SurveyAnswerOption.objects.filter(question=q)
-            for o in survey_question_options:
-                count = AnswerDetail.objects.filter(survey_question=q, answer__schedule=s.id, survey_answer_option=o).count()
-                question_answer_count.append({
-                    'id':o.id,'name':o.name, 'type':o.type,
-                    'send_count':count
-                })
-            questions.append(
-                {"question_id":q.id, 'answers':question_answer_count}
-            )
-        data.append(
-            {
-                'schedule_id': s.id,
-                'schedule': s,
-                'questions_and_answer_count': questions
-            }
-        )
+    # data = []
+    # for s in schedules:
+    #     questions = []
+    #     survey_questions = SurveyQuestion.objects.filter(survey=s.survey).order_by("order_position")
+    #     for q in survey_questions:
+    #         question_answer_count = []
+    #         survey_question_options = SurveyAnswerOption.objects.filter(question=q)
+    #         for o in survey_question_options:
+    #             count = AnswerDetail.objects.filter(survey_question=q, answer__schedule=s.id, survey_answer_option=o).count()
+    #             question_answer_count.append({
+    #                 'id':o.id,'name':o.name, 'type':o.type,
+    #                 'send_count':count
+    #             })
+    #         questions.append(
+    #             {"question_id":q.id, 'answers':question_answer_count}
+    #         )
+    #     data.append(
+    #         {
+    #             'schedule_id': s.id,
+    #             'schedule': s,
+    #             'questions_and_answer_count': questions
+    #         }
+    #     )
 
 
     # print(data)
@@ -95,16 +95,16 @@ def schedule_list(request):
     #     print('\n')
 
 
-    if export_to_excel:
-        schedules = schedules.filter(survey__isnull=False)
-        survey = Survey.objects.get(id=6)
-        print(schedules)
-        print('ishladi')
-        # return export_schedule_summary_excel(schedules, survey)
-        # wb = export_schedule_summary_excel(schedules, survey)
-        # wb = export_schedule_summary_excel(schedules, survey)
-        # return excel_download(wb, "dars_baholash.xlsx")
-        return export_schedule_to_excel(data, survey)
+    # if export_to_excel:
+    #     schedules = schedules.filter(survey__isnull=False)
+    #     survey = Survey.objects.get(id=6)
+    #     print(schedules)
+    #     print('ishladi')
+    #     # return export_schedule_summary_excel(schedules, survey)
+    #     # wb = export_schedule_summary_excel(schedules, survey)
+    #     # wb = export_schedule_summary_excel(schedules, survey)
+    #     # return excel_download(wb, "dars_baholash.xlsx")
+    #     return export_schedule_to_excel(data, survey)
     page = request.GET.get('page', 1)
     paginator = Paginator(schedules, 50)  # sahifada 25 ta qator
     queryset = paginator.get_page(page)  # ← SENING HTML'DAGI NOM
