@@ -29,11 +29,13 @@ def get_obj_or_create_group(id, name, education_lang):
     edu_lang = None
     if bool(education_lang):
         edu_lang = get_obj_or_create(EducationLang, education_lang['code'], education_lang['name'])
-    group = Group.objects.filter(hemis_id=id, education_Lang=edu_lang).first()
+    # group = Group.objects.filter(hemis_id=id, education_Lang=edu_lang).first()
+    group = Group.objects.filter(hemis_id=id).first()
     if group:
         return group
     obj_model, create = Group.objects.get_or_create(
-        hemis_id=id, education_Lang=edu_lang,defaults={"name": name}
+        hemis_id=id, education_Lang=edu_lang,
+        defaults={"name": name}
     )
     return obj_model
 
@@ -92,7 +94,8 @@ def student_update_or_create_from_hemis_data(data):
     group = get_obj_or_create_group(data['group']['id'], data['group']['name'], data['group']['educationLang'])
     student_department = Department.objects.get(hemis_id=data['department']['id'])
     student_hemis_id = data['id']
-    student_data = StudentMeta.objects.update_or_create(
+    print('hemis id', data['meta_id'], student.full_name)
+    student_data, update = StudentMeta.objects.update_or_create(
         user=student,
         hemis_id=data['meta_id'],
         defaults={
@@ -105,7 +108,6 @@ def student_update_or_create_from_hemis_data(data):
             "group": group,
             "level": level,
             "department": student_department,
-            "hemis_id": student_hemis_id,
             'social_category': social_category,
             "is_active":True
         }

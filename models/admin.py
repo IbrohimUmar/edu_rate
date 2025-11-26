@@ -9,12 +9,17 @@ from .models.employee_meta import EmployeeMeta
 from .models.schedule import Schedule
 
 # Register your models here.
-@admin.register(Department, StudentMeta, EmployeeMeta, EducationForm, EmploymentForm, EducationType)
+@admin.register(Department, EmployeeMeta, EducationForm, EmploymentForm, EducationType)
 class DefaultAdmin(admin.ModelAdmin):
     pass
 
 
 
+
+@admin.register(StudentMeta)
+class StudentMetaAdmin(admin.ModelAdmin):
+    list_display = ['id', 'hemis_id', 'user']
+    search_fields = ['hemis_id']
 
 class AnswerDetailInline(admin.TabularInline):
     model = AnswerDetail
