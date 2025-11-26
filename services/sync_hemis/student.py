@@ -1,4 +1,5 @@
 import datetime
+import time
 
 from django.db import transaction, IntegrityError
 import requests
@@ -131,9 +132,20 @@ def student_sync():
     page = 1
     limit = 100
     total_count = None
-    active_meta_data = []
+    request_count = 0
     while total_count is None or (page - 1) * limit < total_count:
         response = get_student_list(page=page, limit=limit)
+        request_count += 1  # So‘rovni sanaymiz
+
+        # agar 10 ta so‘rov bo'lsa — 1 sekund kutamiz
+        if request_count >= 10:
+            time.sleep(1)
+            request_count = 0
+
+        if "data" not in response:
+            print("Xatolik: data topilmadi")
+            break
+
         data = response['data']
         total_count = data['pagination']['totalCount']
         print(data['pagination'])
@@ -144,7 +156,6 @@ def student_sync():
                 page += 1
         except IntegrityError as e:
             handle_exception(e)
-            print(e)
             return False
     print(f'Successfully updated student list {datetime.datetime.now()}')
     return True
