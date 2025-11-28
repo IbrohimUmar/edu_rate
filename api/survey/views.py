@@ -37,6 +37,7 @@ class ActiveAnswerListView(generics.ListAPIView):
         # )
         queryset = (
             Answer.objects.filter(
+                # answer_submitted_at__isnull=True,
                 notification_planned_date__lte=now,  # plan zamanı geldi veya geçti
                 submission_deadline__gte=now,  # ama deadline henüz geçmedi
                 student_id=self.request.user.id
