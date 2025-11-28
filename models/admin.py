@@ -3,15 +3,18 @@ from django.contrib.auth.hashers import check_password, make_password
 
 from .models.answer import Answer, AnswerDetail
 from .models.user import User
-from .models.meta import Department, EducationForm, Group, EducationType, EmploymentForm
+from .models.meta import Department, EducationForm, Group, EducationType, EmploymentForm, Subject
 from .models.student_meta import StudentMeta
 from .models.employee_meta import EmployeeMeta
 from .models.schedule import Schedule
 
 # Register your models here.
-@admin.register(Department, EmployeeMeta, EducationForm, EmploymentForm, EducationType)
+@admin.register(Department, Subject, EmployeeMeta, EducationForm, EmploymentForm, EducationType)
 class DefaultAdmin(admin.ModelAdmin):
     pass
+
+
+
 
 
 
@@ -28,10 +31,12 @@ class AnswerDetailInline(admin.TabularInline):
 
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
-    list_display = ("id", "student", "employee", "survey", "schedule", "is_submit_notification")
+    list_display = ("id", "student", "employee", "survey", "schedule", "is_submit_notification", 'notification_sent_at', 'answer_submitted_at', 'submission_deadline', 'notification_planned_date')
     list_filter = ("is_submit_notification", "survey")
     search_fields = ("student__full_name", "employee__full_name")
     inlines = [AnswerDetailInline]
+    list_editable = ['is_submit_notification', 'notification_sent_at', 'answer_submitted_at', 'notification_planned_date'
+                                                                                            ]
 
 class StudentMetaInline(admin.TabularInline):
     model = StudentMeta
@@ -73,7 +78,7 @@ class GroupAdmin(admin.ModelAdmin):
 class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'hemis_id', 'full_name', 'hemis_id_number', 'type', 'telegram_id')
     list_filter = ('type',)
-    search_fields = ('full_name','hemis_id_number', 'telegram_id')
+    search_fields = ('full_name','hemis_id','hemis_id_number', 'telegram_id')
     inlines = [StudentMetaInline, EmployeeMetaInline, AnswerInline]
 
     def save_model(self, request, obj, form, change):

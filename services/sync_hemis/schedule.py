@@ -2,6 +2,7 @@ import traceback
 from email.policy import default
 
 import requests
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction, IntegrityError
 from datetime import datetime, timedelta
 import time
@@ -120,7 +121,8 @@ def schedule_sync():
                             education_Lang=education_lang
                         )
                     faculty, create = Department.objects.get_or_create(
-                        hemis_id=a['faculty']['id'], code=a['faculty']['code'],
+                        hemis_id=a['faculty']['id'],
+                        code=a['faculty']['code'],
                         defaults={
                             'structureType': get_obj_or_create(StructureType, a['faculty']['structureType']['code'],
                                                                a['faculty']['structureType']['name']),
@@ -166,9 +168,11 @@ def schedule_sync():
                                                                               education_year=education_year,
                                                                               )
 
-
-                    employee = User.objects.get(hemis_id=a['employee']['id'])
-
+                    try:
+                        employee = User.objects.get(hemis_id=a['employee']['id'])
+                    except ObjectDoesNotExist as e:
+                        handle_exception(e)
+                        continue
                     # lesson_date = timestamp_to_datetime(a['lesson_date']).date()
                     # start_hour, start_minute = map(int, a['lessonPair']['start_time'].split(":"))
                     # lesson_start_datetime = datetime.combine(lesson_date, datetime.min.time()).replace(
