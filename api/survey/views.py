@@ -36,10 +36,19 @@ class ActiveAnswerListView(generics.ListAPIView):
         #     .prefetch_related("answerdetail_set")
         # )
         queryset = (
-            Answer.objects.filter(submission_deadline__gt=now, student_id=self.request.user.id)
+            Answer.objects.filter(
+                notification_planned_date__lte=now,  # plan zamanı geldi veya geçti
+                submission_deadline__gte=now,  # ama deadline henüz geçmedi
+                student_id=self.request.user.id
+            )
             .select_related("schedule", "survey", "employee", "student")
             .prefetch_related("answerdetail_set")
         )
+        # queryset = (
+        #     Answer.objects.filter(submission_deadline__lt=now, notification_planned_date__gt=now, student_id=self.request.user.id)
+        #     .select_related("schedule", "survey", "employee", "student")
+        #     .prefetch_related("answerdetail_set")
+        # )
         if survey_id is not None and len(survey_id) > 0 and survey_id not in [0, '0']:
             queryset = queryset.filter(id=survey_id)
 
