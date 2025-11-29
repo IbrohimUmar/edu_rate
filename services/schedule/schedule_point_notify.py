@@ -60,6 +60,7 @@ def check_and_send_notifications():
             counter = 0
             now = timezone.now()
             points = Answer.objects.select_for_update(skip_locked=True).filter(
+                answer_submitted_at__isnull=True,
                 is_submit_notification=False,
                 notification_planned_date__lte=now,
                 submission_deadline__gt=now,
@@ -103,12 +104,9 @@ def check_and_send_notifications():
                     # success = async_to_sync(send_telegram_notification)('6937180', message, inline_keyboards)
                     # print(success, 'success')
                     if success:
-                        print("success bo'ldi")
-                        print(inline_keyboards)
-                        print('---------------------')
-                    #     point.is_submit_notification = True
-                    #     point.notification_sent_at = timezone.now()
-                    #     point.save()
+                        point.is_submit_notification = True
+                        point.notification_sent_at = timezone.now()
+                        point.save()
 
                     counter += 1
                     if counter % 30 == 0:
