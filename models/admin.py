@@ -21,7 +21,7 @@ class DefaultAdmin(admin.ModelAdmin):
 
 @admin.register(StudentMeta)
 class StudentMetaAdmin(admin.ModelAdmin):
-    list_display = ['id', 'hemis_id', 'user']
+    list_display = ['id', 'hemis_id', 'user', 'department']
     search_fields = ['hemis_id']
 
 class AnswerDetailInline(admin.TabularInline):

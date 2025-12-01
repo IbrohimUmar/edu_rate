@@ -4,7 +4,7 @@ import time
 from django.db import transaction, IntegrityError
 import requests
 from models.models.meta import StudentStatus, EducationForm, EducationType, PaymentForm, StudentType, SocialCategory, \
-    Specialty, StudentLevel, Department, EducationLang, Group
+    Specialty, StudentLevel, Department, EducationLang, Group, StructureType
 from models.models.student_meta import StudentMeta
 from models.models.user import User
 from config.settings import HEMIS_URL, HEMIS_API_TOKEN
@@ -92,7 +92,21 @@ def student_update_or_create_from_hemis_data(data):
     )
     level = get_obj_or_create(StudentLevel, data['level']['code'], data['level']['name'])
     group = get_obj_or_create_group(data['group']['id'], data['group']['name'], data['group']['educationLang'])
-    student_department = Department.objects.get(hemis_id=data['department']['id'])
+
+
+    # student_department = Department.objects.get(hemis_id=data['department']['id'])
+    student_department = None
+    if data.get('department', None):
+        student_department, create = Department.objects.get_or_create(
+            hemis_id=data['department']['id'],
+            code=data['department']['code'],
+            defaults={
+                'structureType': get_obj_or_create(StructureType, data['department']['structureType']['code'], data['department']['structureType']['name']),
+                'name': data['department']['name'],
+                'is_active': data['department']['active'],
+            }
+        )
+
     student_hemis_id = data['id']
     print('hemis id', data['meta_id'], student.full_name)
     student_data, update = StudentMeta.objects.update_or_create(
@@ -155,6 +169,11 @@ def student_sync():
             with transaction.atomic():
                 for a in response['data']['items']:
                     student_update_or_create_from_hemis_data(a)
+                    print('--------------')
+                    print(a['full_name'], a['meta_id'])
+                if page > 2:
+                    break
+
                 page += 1
         except IntegrityError as e:
             handle_exception(e)
