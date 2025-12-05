@@ -198,7 +198,6 @@
                         {% if queryset %}
                         <div class="mt-5">
                             <ul class="pagination pagination-circle">
-                                {# Previous tugma #}
                                 {% if queryset.has_previous %}
                                     <li class="page-item previous">
                                         <a href="?page={{ queryset.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">
@@ -242,7 +241,7 @@
                             <h6 class="text-center text-muted fs-sm">Sahifa soni : {{ queryset.paginator.num_pages }} ta</h6>
                         </div>
                         </div>
-                    {% endif %}
+                        {% endif %}
 
 
                     <!--end::Card body-->

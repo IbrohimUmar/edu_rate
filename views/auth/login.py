@@ -2,6 +2,9 @@ from django.contrib.auth import authenticate, logout, login
 from django.contrib import messages
 from django.shortcuts import render, redirect
 
+from config.settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, AUTHORIZE_URL, TOKEN_URL, RESOURCE_OWNER_URL
+from views.auth.client import oAuth2Client
+
 
 def logout_user(request):
     logout(request)
@@ -17,7 +20,23 @@ def get_client_ip(request):
     return ip
 
 
+
+
 def login_user(request):
+    if request.GET.get("from_hemis", None):
+        print('from hemis')
+        client = oAuth2Client(
+            client_id=CLIENT_ID,
+            client_secret=CLIENT_SECRET,
+            redirect_uri=REDIRECT_URI,
+            authorize_url=AUTHORIZE_URL,
+            token_url=TOKEN_URL,
+            resource_owner_url=RESOURCE_OWNER_URL
+        )
+        authorization_url = client.get_authorization_url()
+        return redirect(authorization_url)
+
+
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
