@@ -149,13 +149,16 @@ def auth_callback_login(request):
                     student_data['educationLang']['code'],
                     student_data['educationLang']['name']
                 )
-                specialty, create = Specialty.objects.get_or_create(
-                    code=student_data['specialty']['code'],
-                    # code=data['specialty']['code'],
-                    defaults={
-                        "name": student_data['specialty']['name']
-                    }
-                )
+
+                specialty = Specialty.objects.filter(code=student_data['specialty']['code']).first()
+                if not specialty:
+                    specialty, create = Specialty.objects.get_or_create(
+                        code=student_data['specialty']['code'],
+                        # code=data['specialty']['code'],
+                        defaults={
+                            "name": student_data['specialty']['name']
+                        }
+                    )
                 social_category = get_obj_or_create(SocialCategory, student_data['socialCategory']['code'],
                                                     student_data['socialCategory']['name'])
 
