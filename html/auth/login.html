@@ -137,7 +137,6 @@
 
 
 
-
 		<!--end::Root-->
 		<!--begin::Javascript-->
 		<script>var hostUrl = "{% static '' %}";</script>
@@ -145,6 +144,35 @@
 		<script src="{% static '' %}plugins/global/plugins.bundle.js"></script>
 		<script src="{% static '' %}js/scripts.bundle.js"></script>
 		<!--end::Global Javascript Bundle-->
+
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                <script>
+                        Swal.fire({
+                            icon: '{{ message.tags }}',
+                            title: '{{ message }}',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            position: 'center'
+                        });
+                </script>
+                {% else %}
+                    <script>
+                        Swal.fire({
+                            icon: '{{ message.tags }}',
+                            title: '{{ message }}',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Tushundim',
+                            position: 'center'
+                        });
+                </script>
+
+                {% endif %}
+            {% endfor %}
+        {% endif %}
         <script>
             document.getElementById("year").textContent = new Date().getFullYear();
         </script>
