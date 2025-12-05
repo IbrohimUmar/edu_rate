@@ -1,3 +1,7 @@
+import aiogram
+import aioredis
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from asgiref.sync import async_to_sync
 from django.contrib import messages
 from django.contrib.auth import login
 from django.db import transaction, IntegrityError
@@ -21,45 +25,77 @@ def get_gender(gender):
         return '1'
 
 
-def debug_oauth_log(request):
-    cookies = request.COOKIES
-    session_id = request.session.session_key
-    user_agent = request.META.get("HTTP_USER_AGENT")
-    host = request.get_host()
+# def debug_oauth_log(request):
+#     cookies = request.COOKIES
+#     session_id = request.session.session_key
+#     user_agent = request.META.get("HTTP_USER_AGENT")
+#     host = request.get_host()
+#
+#     log_text = (
+#         "🔍 *OAuth Debug Information*\n\n"
+#         f"🍪 *COOKIES:* `{cookies}`\n"
+#         f"🆔 *SESSION ID:* `{session_id}`\n"
+#         f"📱 *USER AGENT:* `{user_agent}`\n"
+#         f"🌐 *HOST:* `{host}`\n"
+#     )
+#
+#     print(log_text)  # Terminalga chiqadi
+#
+#     # Agar Telegramga jo‘natmoqchi bo‘lsang:
+#     # send_telegram_notification(log_text)
+#
+#     return log_text
 
-    log_text = (
-        "🔍 *OAuth Debug Information*\n\n"
-        f"🍪 *COOKIES:* `{cookies}`\n"
-        f"🆔 *SESSION ID:* `{session_id}`\n"
-        f"📱 *USER AGENT:* `{user_agent}`\n"
-        f"🌐 *HOST:* `{host}`\n"
+async def after_login(user_info, access_token, refresh_token, bot):
+    menu_kb = ReplyKeyboardMarkup(
+        resize_keyboard=True,
+        input_field_placeholder="Bo'limlardan birini tanlang!",
+        keyboard=[
+            [
+                KeyboardButton(text="📰 Shaxsiy ma'lumotlar"),
+                KeyboardButton(text="📝 Izoh qoldirish"),
+            ],
+            [
+                KeyboardButton(text="🧾 Dars jadvali"),
+                KeyboardButton(text="💡 Taklif"),
+            ],
+            [
+                KeyboardButton(text="📊 Faol so‘rovnomalarim")
+            ],
+        ]
     )
 
-    print(log_text)  # Terminalga chiqadi
+    # Telegram mesajı gönder
+    await bot.send_message(
+        chat_id=user_info['chat_id'],
+        text=f"🎉 <b>Tabriklaymiz, {user_info['full_name']}!</b>\n✅ Siz muvaffaqiyatli ro'yxatdan o'tdingiz.",
+        reply_markup=menu_kb,
+        parse_mode="HTML"
+    )
 
-    # Agar Telegramga jo‘natmoqchi bo‘lsang:
-    # send_telegram_notification(log_text)
+    # Redis'e kaydet
+    REDIS_URL = "redis://localhost:6379/1"
+    redis = await aioredis.from_url(REDIS_URL, decode_responses=True)
 
-    return log_text
+    user_id = user_info['data']['id']
+    await redis.set(f"jwt:{user_id}", access_token, ex=48 * 3600)
+    await redis.set(f"refresh-token:{user_id}", refresh_token, ex=7 * 24 * 3600)
+
 
 def auth_callback_login(request):
     auth_code = request.GET.get('code', None)
     chat_id = request.session.get('chat_id')
 
-    # chat_id = request.COOKIES.get("chat_id")
-
     if not auth_code:
         messages.error(request, "Sizda xatolik mavjud")
         return redirect("login")
     if not chat_id:
-
-        logs = debug_oauth_log(request)
-        notify_trancaction_error('state mavjud emas', logs)
-
+        # logs = debug_oauth_log(request)
+        # notify_trancaction_error('state mavjud emas', logs)
         messages.error(request, "call back chat id mavjud emas")
         return redirect("login")
-    # User.objects.filter(telegram_id=chat_id).update(telegram_id=None)
-    notify_trancaction_error('chat_id mavjud', f'state ok {chat_id}')
+    User.objects.filter(telegram_id=chat_id).update(telegram_id=None)
+    # notify_trancaction_error('chat_id mavjud', f'state ok {chat_id}')
 
     client = oAuth2Client(
         client_id=CLIENT_ID,
@@ -71,8 +107,11 @@ def auth_callback_login(request):
     )
     access_token_response = client.get_access_token(auth_code)
     full_info = {}
+    notify_trancaction_error('access_token_response mavjud', access_token_response)
+
     if 'access_token' in access_token_response:
         access_token = access_token_response['access_token']
+        refresh_token = access_token_response['refresh_token']
         user_details = client.get_user_details(access_token)
 
         notify_trancaction_error('test call back', user_details)
@@ -186,6 +225,10 @@ def auth_callback_login(request):
                         "is_active": True
                     }
                 )
+
+                bot = aiogram.Bot(token="8465213062:AAEN_kDqx2EvYlpy0WVton20UBOEuKlhF6k")
+                async_to_sync(after_login)({"chat_id":chat_id, 'full_name':student_data['full_name']}, access_token, refresh_token, bot)
+
                 login(request, user)
                 messages.success(request, f"{user.first_name.title()}, Hemis tizimi orqali kirdingiz!")
                 return redirect("home")
