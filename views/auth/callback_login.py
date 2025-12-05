@@ -138,11 +138,11 @@ def auth_callback_login(request):
                     student_data['paymentForm']['code'],
                     student_data['paymentForm']['name']
                 )
-                student_type = get_obj_or_create(
-                StudentType,
-                student_data['studentType']['code'],
-                student_data['studentType']['name']
-                )
+                # student_type = get_obj_or_create(
+                # StudentType,
+                # student_data['studentType']['code'],
+                # student_data['studentType']['name']
+                # )
                 education_lang = get_obj_or_create(
                     EducationLang,
                     student_data['educationLang']['code'],
@@ -192,7 +192,6 @@ def auth_callback_login(request):
                         "education_form": education_form,
                         "education_type": education_type,
                         "payment_form": payment_form,
-                        "student_type": student_type,
                         "specialty": specialty,
                         "group": group,
                         "level": level,
