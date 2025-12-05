@@ -67,9 +67,14 @@ if IS_SERVER:
         'http://ubsu.edurate.uz'
     ]
     CORS_ALLOW_CREDENTIALS = True
-    SESSION_COOKIE_DOMAIN = "ubsu.edurate.uz"
-    SESSION_COOKIE_SAMESITE = 'None'
-    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_NAME = "sessionid"
+    SESSION_COOKIE_SECURE = True  # Majburiy
+    SESSION_COOKIE_SAMESITE = "None"  # OAuth uchun zarur
+    SESSION_COOKIE_DOMAIN = ".edurate.uz"  # Subdomainlar uchun yagona domain
+
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_SAMESITE = "None"
+    CSRF_COOKIE_DOMAIN = ".edurate.uz"
 
 DATABASES = {
     'default': {
