@@ -47,8 +47,10 @@ def get_gender(gender):
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 import redis.asyncio as redis
 
-REDIS_URL = "redis://localhost:6379/1"
-redis_client = redis.from_url(REDIS_URL, decode_responses=True)
+
+REDIS_URL_BOT = "redis://10.10.10.5:6379/1"
+# REDIS_URL = "redis://localhost:6379/1"
+redis_client = redis.from_url(REDIS_URL_BOT, decode_responses=True)
 
 async def after_login(user_info, access_token, refresh_token, bot):
     menu_kb = ReplyKeyboardMarkup(
