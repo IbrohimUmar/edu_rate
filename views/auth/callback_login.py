@@ -46,12 +46,12 @@ def auth_callback_login(request):
     auth_code = request.GET.get('code', None)
     # chat_id = request.session.get('chat_id')
 
-    state = request.GET.get("state")
+    chat_id = request.COOKIES.get("chat_id")
 
     if not auth_code:
         messages.error(request, "Sizda xatolik mavjud")
         return redirect("login")
-    if not state:
+    if not chat_id:
 
         logs = debug_oauth_log(request)
         notify_trancaction_error('state mavjud emas', logs)
@@ -59,7 +59,7 @@ def auth_callback_login(request):
         messages.error(request, "call back chat id mavjud emas")
         return redirect("login")
     # User.objects.filter(telegram_id=chat_id).update(telegram_id=None)
-    notify_trancaction_error('state mavjud', 'state ok')
+    notify_trancaction_error('chat_id mavjud', f'state ok {chat_id}')
 
     client = oAuth2Client(
         client_id=CLIENT_ID,
