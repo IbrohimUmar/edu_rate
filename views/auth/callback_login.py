@@ -3,7 +3,7 @@ from django.db import transaction, IntegrityError
 from django.shortcuts import redirect
 
 from services.handle_exception import handle_exception
-from services.notification import send_message
+from services.notification import send_message, notify_trancaction_error
 from views.auth.client import oAuth2Client
 from config.settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, AUTHORIZE_URL, TOKEN_URL, RESOURCE_OWNER_URL
 
@@ -31,7 +31,8 @@ def auth_callback_login(request):
             with transaction.atomic():
                 email = user_details['student_id_number'] + "@namdu.uz"
                 print(user_details)
-                send_message(user_details)
+                # send_message(user_details)
+                notify_trancaction_error('test call back', user_details)
                 # user, create = User.objects.update_or_create(hemis_id_number=user_details['student_id_number'], defaults={
                 #     'first_name': user_details['firstname'],
                 #     'last_name': user_details['surname'],
