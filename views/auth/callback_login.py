@@ -21,7 +21,7 @@ def validate_telegram_initdata(init_data: str) -> dict | None:
     import time
     import json
     from config.settings import TG_BOT_TOKEN
-    BOT_TOKEN = TG_BOT_TOKEN  # settings.py'ye koy
+    BOT_TOKEN = '8465213062:AAEN_kDqx2EvYlpy0WVton20UBOEuKlhF6k'  # settings.py'ye koy
     """Telegram initData doğrulama – resmi yöntem"""
     try:
         parsed = parse_qs(init_data)
