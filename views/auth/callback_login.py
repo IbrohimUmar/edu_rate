@@ -44,9 +44,9 @@ def debug_oauth_log(request):
 
 def auth_callback_login(request):
     auth_code = request.GET.get('code', None)
-    # chat_id = request.session.get('chat_id')
+    chat_id = request.session.get('chat_id')
 
-    chat_id = request.COOKIES.get("chat_id")
+    # chat_id = request.COOKIES.get("chat_id")
 
     if not auth_code:
         messages.error(request, "Sizda xatolik mavjud")
