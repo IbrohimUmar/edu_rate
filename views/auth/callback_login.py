@@ -14,41 +14,6 @@ from views.auth.client import oAuth2Client
 from config.settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, AUTHORIZE_URL, TOKEN_URL, RESOURCE_OWNER_URL
 
 
-def validate_telegram_initdata(init_data: str) -> dict | None:
-    from urllib.parse import parse_qs
-    import hmac
-    import hashlib
-    import time
-    import json
-    from config.settings import TG_BOT_TOKEN
-    BOT_TOKEN = '8465213062:AAEN_kDqx2EvYlpy0WVton20UBOEuKlhF6k'  # settings.py'ye koy
-    """Telegram initData doğrulama – resmi yöntem"""
-    try:
-        parsed = parse_qs(init_data)
-
-        received_hash = parsed.pop("hash")[0]
-
-        # Alfabetik sırala ve data_check_string oluştur
-        data_check_string = "\n".join(f"{k}={v[0]}" for k, v in sorted(parsed.items()))
-
-        secret_key = hashlib.sha256(BOT_TOKEN.encode()).digest()
-        calculated_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
-
-        if calculated_hash != received_hash:
-            return None
-
-        # auth_date eski mi kontrolü (opsiyonel ama önerilir)
-        auth_date = int(parsed["auth_date"][0])
-        if (time.time() - auth_date) > 86400:  # 24 saat
-            return None
-
-        user_json = parsed["user"][0]
-        user = json.loads(user_json)
-        return user
-
-    except Exception:
-        return None
-
 def get_gender(gender):
     if gender['code'] == '12':
         return '2'
@@ -58,7 +23,7 @@ def get_gender(gender):
 
 def auth_callback_login(request):
     auth_code = request.GET.get('code', None)
-    chat_id = request.session.get('chat_id', None)
+    chat_id = request.session.get('chat_id')
     if not auth_code:
         messages.error(request, "Sizda xatolik mavjud")
         return redirect("login")
