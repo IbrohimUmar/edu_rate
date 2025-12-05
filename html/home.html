@@ -147,6 +147,19 @@
 
                     </div>
                 </div>
+
+
+
+
+
+
+                <div class="card">
+                        <h1>Telegram Mini App</h1>
+    <pre id="output"></pre>
+                </div>
+
+
+
                 </div>
 
             </div>
@@ -160,10 +173,40 @@
 {% block header %}
 <link href="{% static '' %}plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css"/>
 <script src="{% static '' %}plugins/global/plugins.bundle.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 {% endblock %}
 
 {% block footer %}
+
+    <script>
+        // Telegram nesnesine erişim
+        const tg = window.Telegram.WebApp;
+
+        // Arayüzü hazırla
+        tg.ready();
+
+        // Kullanıcı bilgileri
+        const user = tg.initDataUnsafe.user;
+
+        if (user) {
+            const info = `
+                ID: ${user.id}
+                Ad: ${user.first_name}
+                Soyad: ${user.last_name || ""}
+                Kullanıcı Adı: ${user.username || ""}
+                Dil: ${user.language_code}
+            `;
+
+            document.getElementById("output").innerText = info;
+
+            console.log("User data:", user);
+        } else {
+            document.getElementById("output").innerText =
+                "Kullanıcı bilgisine erişilemedi.";
+        }
+    </script>
+
 <script>
 var element = document.getElementById('kt_apexcharts_1');
 
