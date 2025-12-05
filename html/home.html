@@ -149,18 +149,6 @@
                 </div>
 
 
-
-
-
-
-                <div class="card">
-                        <h1>Telegram Mini App</h1>
-    <pre id="userInfo"></pre>
-                    <pre id="result">Yükleniyor...</pre>
-                </div>
-
-
-
                 </div>
 
             </div>
@@ -179,67 +167,6 @@
 {% endblock %}
 
 {% block footer %}
-<script>
-        setTimeout(() => {
-            const raw = Telegram.WebApp.initDataUnsafe;
-            document.getElementById('result').innerText = JSON.stringify(raw, null, 2);
-        }, 800);
-    </script>
-<script>
-        // 2. Bu kısmı en alta koy (veya DOMContentLoaded içinde)
-        document.addEventListener("DOMContentLoaded", function() {
-            // Biraz bekle ki Telegram kütüphanesi tam yüklensin
-            setTimeout(function() {
-                if (typeof Telegram !== "undefined" && Telegram.WebApp) {
-                    Telegram.WebApp.ready(); // iyi pratik
-
-                    const user = Telegram.WebApp.initDataUnsafe.user;
-                    if (user && user.first_name) {
-                        document.getElementById('userInfo').innerHTML = user.first_name;
-                    } else {
-                        document.getElementById('userInfo').innerHTML = "İsim alınamadı";
-                    }
-                } else {
-                    document.getElementById('userInfo').innerHTML = "Telegram WebApp yüklenmedi!";
-                }
-            }, 500); // 500ms beklemek genelde yeterli oluyor
-        });
-    </script>
-<!--<script>-->
-
-<!--    // Mini App hazır olduğunda çalışır-->
-<!--    Telegram.WebApp.ready();-->
-
-<!--    // Kullanıcı bilgilerini al-->
-<!--    const user = Telegram.WebApp.initDataUnsafe.user;-->
-
-<!--    if (user) {-->
-<!--            document.getElementById('userInfo').innerHTML = `-->
-<!--        ${user}-->
-<!--      `;-->
-
-<!--      // Ekrana yazdır (örnek)-->
-<!--      // document.getElementById('userInfo').innerHTML = `-->
-<!--      //   <strong>ID:</strong> ${userId}<br>-->
-<!--      //   <strong>İsim:</strong> ${firstName}<br>-->
-<!--      //   <strong>Soyisim:</strong> ${lastName}<br>-->
-<!--      //   <strong>Tam Ad:</strong> ${fullName}<br>-->
-<!--      //   <strong>Username:</strong> @${username}-->
-<!--      // `;-->
-
-<!--      // İstersen backend’e gönderebilirsin-->
-<!--      // sendToBackend(userId, fullName);-->
-<!--    } else {-->
-<!--        document.getElementById('userInfo').innerHTML = `-->
-<!--       <strong> user topilmadi</strong>-->
-<!--      `;-->
-<!--      console.log("Kullanıcı bilgisi alınamadı (muhtemelen test ortamı)");-->
-<!--    }-->
-
-<!--    // Ekstra: Tüm initData (güvenlik için hash ile birlikte gelir)-->
-<!--    const initData = Telegram.WebApp.initData;-->
-<!--    console.log('Tüm initData:', initData);-->
-<!--  </script>-->
 <script>
 var element = document.getElementById('kt_apexcharts_1');
 

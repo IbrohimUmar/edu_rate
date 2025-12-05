@@ -58,25 +58,15 @@ def get_gender(gender):
 
 def auth_callback_login(request):
     auth_code = request.GET.get('code', None)
+    chat_id = request.session.get('chat_id', None)
     if not auth_code:
         messages.error(request, "Sizda xatolik mavjud")
         return redirect("login")
+    if not chat_id:
+        messages.error(request, "call back chat id mavjud emas")
+        return redirect("login")
+    User.objects.filter(telegram_id=chat_id).update(telegram_id=None)
 
-    init_data = request.GET.get("tgWebAppData", "")
-    # if not init_data:
-    #     messages.error(request, "telegram datalar mavjud emas")
-    #     return redirect('login')
-    #
-    telegram_data = validate_telegram_initdata(init_data)
-    # if not telegram_data:
-    #     messages.error(request, "telegram datalar valid emas")
-    #     return redirect('login')
-    # telegram_id = telegram_data["id"]
-
-
-
-
-    print('keldi')
     client = oAuth2Client(
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
@@ -92,8 +82,6 @@ def auth_callback_login(request):
         user_details = client.get_user_details(access_token)
 
         notify_trancaction_error('test call back', user_details)
-        notify_trancaction_error('test init_data', init_data)
-        notify_trancaction_error('test telegram_data', telegram_data)
         try:
             with transaction.atomic():
                 if user_details.get("email", None) is None:
@@ -113,6 +101,7 @@ def auth_callback_login(request):
                     'is_active': True,
                     'is_staff': False,
                     'email': email,
+                    'telegram_id': chat_id,
                     # 'is_staff': is_staff,
                     'mobile': user_details['phone'],
                     'image': user_details['picture'],
