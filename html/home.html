@@ -179,11 +179,25 @@
 
 {% block footer %}
 <script>
-    window.addEventListener("load", function() {
-        const firstName = Telegram.WebApp.initDataUnsafe.user.first_name;
-        document.getElementById('userInfo').innerHTML = `${firstName}`;
-    });
-</script>
+        // 2. Bu kısmı en alta koy (veya DOMContentLoaded içinde)
+        document.addEventListener("DOMContentLoaded", function() {
+            // Biraz bekle ki Telegram kütüphanesi tam yüklensin
+            setTimeout(function() {
+                if (typeof Telegram !== "undefined" && Telegram.WebApp) {
+                    Telegram.WebApp.ready(); // iyi pratik
+
+                    const user = Telegram.WebApp.initDataUnsafe.user;
+                    if (user && user.first_name) {
+                        document.getElementById('userInfo').innerHTML = user.first_name;
+                    } else {
+                        document.getElementById('userInfo').innerHTML = "İsim alınamadı";
+                    }
+                } else {
+                    document.getElementById('userInfo').innerHTML = "Telegram WebApp yüklenmedi!";
+                }
+            }, 500); // 500ms beklemek genelde yeterli oluyor
+        });
+    </script>
 <!--<script>-->
 
 <!--    // Mini App hazır olduğunda çalışır-->
