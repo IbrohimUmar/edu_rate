@@ -155,7 +155,7 @@
 
                 <div class="card">
                         <h1>Telegram Mini App</h1>
-    <pre id="output"></pre>
+    <pre id="userInfo"></pre>
                 </div>
 
 
@@ -178,35 +178,43 @@
 {% endblock %}
 
 {% block footer %}
+<script>
+    // Mini App hazır olduğunda çalışır
+    Telegram.WebApp.ready();
 
-    <script>
-        // Telegram nesnesine erişim
-        const tg = window.Telegram.WebApp;
+    // Kullanıcı bilgilerini al
+    const user = Telegram.WebApp.initDataUnsafe.user;
 
-        // Arayüzü hazırla
-        tg.ready();
+    if (user) {
+      const userId = user.id;                    // Chat ID (numeric)
+      const firstName = user.first_name || '';
+      const lastName = user.last_name || '';
+      const username = user.username || '(yok)';
+      const fullName = `${firstName} ${lastName}`.trim();
 
-        // Kullanıcı bilgileri
-        const user = tg.initDataUnsafe.user;
+      console.log('User ID:', userId);
+      console.log('İsim Soyisim:', fullName);
+      console.log('Username:', username);
 
-        if (user) {
-            const info = `
-                ID: ${user.id}
-                Ad: ${user.first_name}
-                Soyad: ${user.last_name || ""}
-                Kullanıcı Adı: ${user.username || ""}
-                Dil: ${user.language_code}
-            `;
+      // Ekrana yazdır (örnek)
+      document.getElementById('userInfo').innerHTML = `
+        <strong>ID:</strong> ${userId}<br>
+        <strong>İsim:</strong> ${firstName}<br>
+        <strong>Soyisim:</strong> ${lastName}<br>
+        <strong>Tam Ad:</strong> ${fullName}<br>
+        <strong>Username:</strong> @${username}
+      `;
 
-            document.getElementById("output").innerText = info;
+      // İstersen backend’e gönderebilirsin
+      // sendToBackend(userId, fullName);
+    } else {
+      console.log("Kullanıcı bilgisi alınamadı (muhtemelen test ortamı)");
+    }
 
-            console.log("User data:", user);
-        } else {
-            document.getElementById("output").innerText =
-                "Kullanıcı bilgisine erişilemedi.";
-        }
-    </script>
-
+    // Ekstra: Tüm initData (güvenlik için hash ile birlikte gelir)
+    const initData = Telegram.WebApp.initData;
+    console.log('Tüm initData:', initData);
+  </script>
 <script>
 var element = document.getElementById('kt_apexcharts_1');
 
