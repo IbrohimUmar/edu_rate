@@ -62,12 +62,12 @@ def auth_callback_login(request):
         messages.error(request, "Sizda xatolik mavjud")
         return redirect("login")
 
-    # init_data = request.GET.get("tgWebAppData", "")
+    init_data = request.GET.get("tgWebAppData", "")
     # if not init_data:
     #     messages.error(request, "telegram datalar mavjud emas")
     #     return redirect('login')
     #
-    # telegram_data = validate_telegram_initdata(init_data)
+    telegram_data = validate_telegram_initdata(init_data)
     # if not telegram_data:
     #     messages.error(request, "telegram datalar valid emas")
     #     return redirect('login')
@@ -90,6 +90,9 @@ def auth_callback_login(request):
     if 'access_token' in access_token_response:
         access_token = access_token_response['access_token']
         user_details = client.get_user_details(access_token)
+
+        notify_trancaction_error('test call back', user_details)
+        notify_trancaction_error('test call back', telegram_data)
         try:
             with transaction.atomic():
                 if user_details.get("email", None) is None:
@@ -97,7 +100,6 @@ def auth_callback_login(request):
                 else:
                     email = user_details['email']
                 # send_message(user_details)
-                notify_trancaction_error('test call back', user_details)
                 student_data = user_details['data']
 
                 user, create = User.objects.update_or_create(hemis_id_number=user_details['student_id_number'], defaults={
