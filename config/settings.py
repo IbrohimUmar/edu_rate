@@ -67,7 +67,9 @@ if IS_SERVER:
         'http://ubsu.edurate.uz'
     ]
     CORS_ALLOW_CREDENTIALS = True
-
+    SESSION_COOKIE_DOMAIN = "ubsu.edurate.uz"
+    SESSION_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SECURE = True
 
 DATABASES = {
     'default': {
