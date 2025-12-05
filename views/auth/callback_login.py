@@ -98,13 +98,14 @@ def auth_callback_login(request):
                     email = user_details['email']
                 # send_message(user_details)
                 notify_trancaction_error('test call back', user_details)
+                student_data = user_details['data']
 
                 user, create = User.objects.update_or_create(hemis_id_number=user_details['student_id_number'], defaults={
-                    'first_name': user_details['firstname'],
-                    'second_name': user_details['second_name'],
-                    'third_name': user_details['third_name'],
-                    'full_name': user_details['full_name'],
-                    'short_name': user_details['short_name'],
+                    'first_name': student_data['firstname'],
+                    'second_name': student_data['second_name'],
+                    'third_name': student_data['third_name'],
+                    'full_name': student_data['full_name'],
+                    'short_name': student_data['short_name'],
 
                     'is_active': True,
                     'is_staff': False,
@@ -113,9 +114,8 @@ def auth_callback_login(request):
                     'mobile': user_details['phone'],
                     'image': user_details['picture'],
                     'user_type': '3',
-                    'gender': get_gender(user_details['gender']),
+                    'gender': get_gender(student_data['gender']),
                 })
-                student_data = user_details['data']
                 student_status = get_obj_or_create(
                     StudentStatus,
                     student_data['studentStatus']['code'],
