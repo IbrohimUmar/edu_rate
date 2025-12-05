@@ -17,6 +17,20 @@ from services.schedule.schedule_point import calculate_deadline, calculate_lesso
 
 @login_required(login_url='login')
 def home(request):
+    from services.notification import notify_trancaction_error
+
+    import json
+    data = json.loads(request.body.decode("utf-8"))
+
+
+    notify_trancaction_error('data in home page', data)
+    if "message" in data:
+        chat_id = data["message"]["chat"]["id"]
+        text = data["message"]["text"]
+
+        print("CHAT ID:", chat_id)
+
+
     user_statistic = User.objects.filter(type='3').aggregate(
         total_student_count=Count("id"),
         total_registered_count=Count("id", Q(telegram_id__isnull=False)),
