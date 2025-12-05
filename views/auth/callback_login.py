@@ -1,5 +1,4 @@
 import aiogram
-import aioredis
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from asgiref.sync import async_to_sync
 from django.contrib import messages
@@ -45,6 +44,11 @@ def get_gender(gender):
 #     # send_telegram_notification(log_text)
 #
 #     return log_text
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+import redis.asyncio as redis
+
+REDIS_URL = "redis://localhost:6379/1"
+redis_client = redis.from_url(REDIS_URL, decode_responses=True)
 
 async def after_login(user_info, access_token, refresh_token, bot):
     menu_kb = ReplyKeyboardMarkup(
@@ -74,12 +78,9 @@ async def after_login(user_info, access_token, refresh_token, bot):
     )
 
     # Redis'e kaydet
-    REDIS_URL = "redis://localhost:6379/1"
-    redis = await aioredis.from_url(REDIS_URL, decode_responses=True)
-
     user_id = user_info['data']['id']
-    await redis.set(f"jwt:{user_id}", access_token, ex=48 * 3600)
-    await redis.set(f"refresh-token:{user_id}", refresh_token, ex=7 * 24 * 3600)
+    await redis_client.set(f"jwt:{user_id}", access_token, ex=48 * 3600)
+    await redis_client.set(f"refresh-token:{user_id}", refresh_token, ex=7 * 24 * 3600)
 
 
 def auth_callback_login(request):
