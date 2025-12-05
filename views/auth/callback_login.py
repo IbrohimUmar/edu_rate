@@ -101,7 +101,7 @@ def auth_callback_login(request):
                 student_data = user_details['data']
 
                 user, create = User.objects.update_or_create(hemis_id_number=user_details['student_id_number'], defaults={
-                    'first_name': student_data['firstname'],
+                    'first_name': student_data['first_name'],
                     'second_name': student_data['second_name'],
                     'third_name': student_data['third_name'],
                     'full_name': student_data['full_name'],
