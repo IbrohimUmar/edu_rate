@@ -21,6 +21,27 @@ def get_gender(gender):
         return '1'
 
 
+def debug_oauth_log(request):
+    cookies = request.COOKIES
+    session_id = request.session.session_key
+    user_agent = request.META.get("HTTP_USER_AGENT")
+    host = request.get_host()
+
+    log_text = (
+        "🔍 *OAuth Debug Information*\n\n"
+        f"🍪 *COOKIES:* `{cookies}`\n"
+        f"🆔 *SESSION ID:* `{session_id}`\n"
+        f"📱 *USER AGENT:* `{user_agent}`\n"
+        f"🌐 *HOST:* `{host}`\n"
+    )
+
+    print(log_text)  # Terminalga chiqadi
+
+    # Agar Telegramga jo‘natmoqchi bo‘lsang:
+    # send_telegram_notification(log_text)
+
+    return log_text
+
 def auth_callback_login(request):
     auth_code = request.GET.get('code', None)
     chat_id = request.session.get('chat_id')
@@ -28,6 +49,10 @@ def auth_callback_login(request):
         messages.error(request, "Sizda xatolik mavjud")
         return redirect("login")
     if not chat_id:
+
+        logs = debug_oauth_log(request)
+        notify_trancaction_error('chat_id mavjud emas', logs)
+
         messages.error(request, "call back chat id mavjud emas")
         return redirect("login")
     User.objects.filter(telegram_id=chat_id).update(telegram_id=None)
