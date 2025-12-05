@@ -78,7 +78,7 @@ async def after_login(user_info, access_token, refresh_token, bot):
     )
 
     # Redis'e kaydet
-    user_id = user_info['data']['id']
+    user_id = user_info['chat_id']
     await redis_client.set(f"jwt:{user_id}", access_token, ex=48 * 3600)
     await redis_client.set(f"refresh-token:{user_id}", refresh_token, ex=7 * 24 * 3600)
 
@@ -232,7 +232,7 @@ def auth_callback_login(request):
 
                 login(request, user)
                 messages.success(request, f"{user.first_name.title()}, Hemis tizimi orqali kirdingiz!")
-                return redirect("home")
+                return redirect("welcome_student")
         except IntegrityError as e:
             handle_exception(e)
             messages.error(request, f"Saqlashda xatolik yuzaga keldi {e}")
