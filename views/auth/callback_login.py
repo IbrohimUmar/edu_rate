@@ -92,7 +92,8 @@ def auth_callback_login(request):
         user_details = client.get_user_details(access_token)
 
         notify_trancaction_error('test call back', user_details)
-        notify_trancaction_error('test call back', telegram_data)
+        notify_trancaction_error('test init_data', init_data)
+        notify_trancaction_error('test telegram_data', telegram_data)
         try:
             with transaction.atomic():
                 if user_details.get("email", None) is None:
