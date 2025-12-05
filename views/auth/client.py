@@ -1,6 +1,7 @@
 import requests
 
 from services.handle_exception import handle_exception
+from urllib.parse import urlencode
 
 
 class oAuth2Client:
@@ -12,8 +13,17 @@ class oAuth2Client:
         self.token_url = token_url
         self.resource_owner_url = resource_owner_url
 
-    def get_authorization_url(self):
-        return f"{self.authorize_url}?client_id={self.client_id}&redirect_uri={self.redirect_uri}&response_type=code"
+    def get_authorization_url(self, state=None):
+        params = {
+            "client_id": self.client_id,
+            "redirect_uri": self.redirect_uri,
+            "response_type": "code"
+        }
+        if state:
+            params["state"] = state
+        query_string = urlencode(params)
+        return f"{self.authorize_url}?{query_string}"
+        # return f"{self.authorize_url}?client_id={self.client_id}&redirect_uri={self.redirect_uri}&response_type=code"
 
     def get_access_token(self, auth_code):
         payload = {
