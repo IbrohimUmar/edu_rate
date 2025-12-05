@@ -156,6 +156,7 @@
                 <div class="card">
                         <h1>Telegram Mini App</h1>
     <pre id="userInfo"></pre>
+                    <pre id="result">Yükleniyor...</pre>
                 </div>
 
 
@@ -178,6 +179,12 @@
 {% endblock %}
 
 {% block footer %}
+<script>
+        setTimeout(() => {
+            const raw = Telegram.WebApp.initDataUnsafe;
+            document.getElementById('result').innerText = JSON.stringify(raw, null, 2);
+        }, 800);
+    </script>
 <script>
         // 2. Bu kısmı en alta koy (veya DOMContentLoaded içinde)
         document.addEventListener("DOMContentLoaded", function() {
