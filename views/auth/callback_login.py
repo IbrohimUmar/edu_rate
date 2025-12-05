@@ -211,7 +211,7 @@ def auth_callback_login(request):
                 # )
 
                 student_hemis_id = user_details['id']
-                student_data, update = StudentMeta.objects.update_or_create(
+                student_data_new, update = StudentMeta.objects.update_or_create(
                     user=user,
                     defaults={
                         "student_status": student_status,
