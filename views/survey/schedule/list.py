@@ -26,6 +26,68 @@ from models.models.user import User
 from views.schedule.list import export_schedule_to_excel
 
 
+
+
+def prepare_excel_data_optimized(schedules, survey):
+    schedule_ids = list(schedules.values_list("id", flat=True))
+
+    # 🔥 BIRTA YIRIK QUERY — HAMMA COUNTLAR!
+    answer_details = (
+        AnswerDetail.objects
+            .filter(answer__schedule_id__in=schedule_ids)
+            .values(
+                "answer__schedule_id",
+                "survey_question_id",
+                "survey_answer_option_id"
+            )
+            .annotate(total=Count("id"))
+    )
+
+    # mapping → {(schedule_id, question_id, option_id): count}
+    answer_map = {
+        (a["answer__schedule_id"], a["survey_question_id"], a["survey_answer_option_id"]): a["total"]
+        for a in answer_details
+    }
+
+    # savollarni olish
+    questions = SurveyQuestion.objects.filter(survey=survey).order_by("order_position")
+    questions_list = list(questions)
+
+    # optionsni olish
+    options_map = {}
+    for q in questions_list:
+        options_map[q.id] = list(
+            SurveyAnswerOption.objects.filter(question=q).order_by("type")
+        )
+        
+    # Schedules → export data
+    export_data = []
+    for s in schedules:
+        one_schedule = {
+            "schedule": s,
+            "questions_and_answer_count": []
+        }
+        for q in questions_list:
+            answers = []
+            for opt in options_map[q.id]:
+                count_val = answer_map.get((s.id, q.id, opt.id), 0)
+                answers.append({
+                    "id": opt.id,
+                    "name": opt.name,
+                    "type": opt.type,
+                    "send_count": count_val
+                })
+            one_schedule["questions_and_answer_count"].append({
+                "question_id": q.id,
+                "answers": answers
+            })
+        export_data.append(one_schedule)
+
+    return export_data
+
+
+
+
 @login_required(login_url='login')
 def survey_schedule_list(request, id):
     survey = get_object_or_404(Survey, id=id)
@@ -68,30 +130,32 @@ def survey_schedule_list(request, id):
             Q(employee__third_name__icontains=search_query)
         )
     if export_to_excel:
-        data = []
-        for s in schedules:
-            questions = []
-            survey_questions = SurveyQuestion.objects.filter(survey=s.survey).order_by("order_position")
-            for q in survey_questions:
-                question_answer_count = []
-                survey_question_options = SurveyAnswerOption.objects.filter(question=q)
-                for o in survey_question_options:
-                    count = AnswerDetail.objects.filter(survey_question=q, answer__schedule=s.id,
-                                                        survey_answer_option=o).count()
-                    question_answer_count.append({
-                        'id': o.id, 'name': o.name, 'type': o.type,
-                        'send_count': count
-                    })
-                questions.append(
-                    {"question_id": q.id, 'answers': question_answer_count}
-                )
-            data.append(
-                {
-                    'schedule_id': s.id,
-                    'schedule': s,
-                    'questions_and_answer_count': questions
-                }
-            )
+        # data = []
+        # for s in schedules.filter(answer_send_count_qs__gt=0):
+        #     questions = []
+        #     survey_questions = SurveyQuestion.objects.filter(survey=s.survey).order_by("order_position")
+        #     for q in survey_questions:
+        #         question_answer_count = []
+        #         survey_question_options = SurveyAnswerOption.objects.filter(question=q)
+        #         for o in survey_question_options:
+        #             count = AnswerDetail.objects.filter(survey_question=q, answer__schedule=s.id,
+        #                                                 survey_answer_option=o).count()
+        #             question_answer_count.append({
+        #                 'id': o.id, 'name': o.name, 'type': o.type,
+        #                 'send_count': count
+        #             })
+        #         questions.append(
+        #             {"question_id": q.id, 'answers': question_answer_count}
+        #         )
+        #     data.append(
+        #         {
+        #             'schedule_id': s.id,
+        #             'schedule': s,
+        #             'questions_and_answer_count': questions
+        #         }
+        #     )
+        data = prepare_excel_data_optimized(schedules, survey)
+
         # return export_schedule_to_excel(schedules, survey)
         return export_schedule_to_excel(data, survey)
 
