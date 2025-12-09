@@ -105,7 +105,7 @@
 										<!--end:Menu sub-->
 									</div>
 
-									<div data-kt-menu-trigger="click" class="menu-item  {% if u == 'setting_sync' or u == 'setting_user_list' %} here show{% endif %} menu-accordion">
+									<div data-kt-menu-trigger="click" class="menu-item  {% if u == 'export_file_list' or u == 'setting_sync' or u == 'setting_user_list' %} here show{% endif %} menu-accordion">
 										<!--begin:Menu link-->
 										<span class="menu-link">
 											<span class="menu-icon">
@@ -137,6 +137,17 @@
 														<span class="bullet bullet-dot"></span>
 													</span>
 													<span class="menu-title">Sinxronlash</span>
+												</a>
+												<!--end:Menu link-->
+											</div>
+
+											<div class="menu-item">
+												<!--begin:Menu link-->
+												<a class="menu-link {% if u == 'export_file_list'%}active{% endif %}" href="{% url 'export_file_list' %}" title="Fayl eksportlash" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+													<span class="menu-bullet">
+														<span class="bullet bullet-dot"></span>
+													</span>
+													<span class="menu-title">Fayl eksport</span>
 												</a>
 												<!--end:Menu link-->
 											</div>

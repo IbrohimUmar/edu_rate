@@ -21,7 +21,6 @@ from django.db.models import Count, Q
 
 # from models.models.schedule_point import SchedulePoint
 from models.models.user import User
-from views.schedule.list import export_schedule_to_excel
 
 
 @login_required(login_url='login')

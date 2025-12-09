@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.hashers import check_password, make_password
 
 from .models.answer import Answer, AnswerDetail
+from .models.export_file import ExportFile
 from .models.user import User
 from .models.meta import Department, EducationForm, Group, EducationType, EmploymentForm, Subject
 from .models.student_meta import StudentMeta
@@ -9,7 +10,7 @@ from .models.employee_meta import EmployeeMeta
 from .models.schedule import Schedule
 
 # Register your models here.
-@admin.register(Department, Subject, EmployeeMeta, EducationForm, EmploymentForm, EducationType)
+@admin.register(Department, Subject, EmployeeMeta, EducationForm, EmploymentForm, EducationType, ExportFile)
 class DefaultAdmin(admin.ModelAdmin):
     pass
 

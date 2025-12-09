@@ -24,7 +24,27 @@
 						<!--begin::Navbar-->
 						<div class="app-navbar flex-grow-1 justify-content-end" id="kt_app_header_navbar">
 
+							<a href="{% url 'export_file_list' %}" class="app-navbar-item ms-2 ms-lg-6">
 
+									<!--begin::Menu- wrapper-->
+									<div class="btn btn-icon btn-custom btn-color-gray-600 btn-active-color-primary w-35px h-35px w-md-40px h-md-40px"
+										 data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+										 data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
+<!--										<i class="ki-duotone ki-file-right-26 fs-1"></i>-->
+<!--										<i class="ki-duotone ki-file-right">-->
+<!--										<i class="ki-outline ki-update-file fs-2x">-->
+<!--											 <span class="path1"></span>-->
+<!--											 <span class="path2"></span>-->
+<!--											 <span class="path3"></span>-->
+<!--											 <span class="path4"></span>-->
+<!--											</i>-->
+										<i class="ki-outline ki-update-folder fs-1">
+										 <span class="path1"></span>
+										 <span class="path2"></span>
+										</i>
+									</div>
+									<!--end::Menu wrapper-->
+								</a>
 							<!--end::Chat-->
 							<!--begin::User menu-->
 							<div class="app-navbar-item ms-2 ms-lg-6" id="kt_header_user_menu_toggle">
