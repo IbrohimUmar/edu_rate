@@ -69,11 +69,10 @@ def setting_sync(request):
             messages.warning(request, f"⚠️ '{current_sync_type['name']}' sinxronizatsiyasi hali tugamagan!")
 
     if sync_student is not None:
-        student_sync()
-        # if run_in_thread(student_sync, "student"):
-        #     messages.success(request, "🎓 Talabalar sinxronizatsiyasi boshlandi.")
-        # else:
-        #     messages.warning(request, f"⚠️ '{current_sync_type['name']}' sinxronizatsiyasi hali tugamagan!")
+        if run_in_thread(student_sync, "student"):
+            messages.success(request, "🎓 Talabalar sinxronizatsiyasi boshlandi.")
+        else:
+            messages.warning(request, f"⚠️ '{current_sync_type['name']}' sinxronizatsiyasi hali tugamagan!")
 
     if sync_schedule is not None:
         if run_in_thread(schedule_sync, "schedule"):
