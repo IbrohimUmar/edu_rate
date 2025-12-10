@@ -149,15 +149,16 @@ def student_sync():
     page = 1
     limit = 100
     total_count = None
-    request_count = 0
+    # request_count = 0
     while total_count is None or (page - 1) * limit < total_count:
         response = get_student_list(page=page, limit=limit)
-        request_count += 1  # So‘rovni sanaymiz
 
+        time.sleep(0.12)
+        # request_count += 1  # So‘rovni sanaymiz
         # agar 10 ta so‘rov bo'lsa — 1 sekund kutamiz
-        if request_count >= 10:
-            time.sleep(1)
-            request_count = 0
+        # if request_count >= 10:
+        #     time.sleep(1)
+        #     request_count = 0
 
         if "data" not in response:
             print("Xatolik: data topilmadi")
