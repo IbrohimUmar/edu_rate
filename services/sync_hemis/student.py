@@ -107,10 +107,13 @@ def student_update_or_create_from_hemis_data(data):
             }
         )
     student_hemis_id = data['id']
+    # print('----------------------')
+    # print(data['full_name'], data['student_id_number'], data['meta_id'])
     student_data, update = StudentMeta.objects.update_or_create(
         user=student,
-        hemis_id=data['meta_id'],
+        # hemis_id=data['meta_id'],
         defaults={
+            "hemis_id": data['meta_id'],
             "student_status": student_status,
             "education_form": education_form,
             "education_type": education_type,
@@ -167,7 +170,7 @@ def student_sync():
             with transaction.atomic():
                 for a in response['data']['items']:
                     student_update_or_create_from_hemis_data(a)
-                
+
 
                 page += 1
         except IntegrityError as e:
