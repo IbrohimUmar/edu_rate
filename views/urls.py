@@ -9,6 +9,8 @@ urlpatterns = [
     path('schedule/', include("views.schedule.urls")),
     path('survey/', include("views.survey.urls")),
     path('teacher/', include("views.teacher.urls")),
+    path('student/', include("views.student.urls")),
     path('export-file/', include("views.export_file.urls")),
+    path('statistic/', include("views.statistic.urls")),
     # path('setting/', include("views.setting.urls")),
 ]

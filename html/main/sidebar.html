@@ -105,6 +105,98 @@
 										<!--end:Menu sub-->
 									</div>
 
+									<div data-kt-menu-trigger="click" class="menu-item  {% if u == 'student_list' %} here show{% endif %} menu-accordion">
+										<!--begin:Menu link-->
+										<span class="menu-link">
+											<span class="menu-icon">
+<!--												<i class="ki-outline ki-profile-user fs-2"></i>-->
+												<i class="ki-outline ki-people fs-2">
+												</i>
+											</span>
+											<span class="menu-title">Talabalar</span>
+											<span class="menu-arrow"></span>
+										</span>
+										<!--end:Menu link-->
+										<!--begin:Menu sub-->
+										<div class="menu-sub menu-sub-accordion">
+											<!--begin:Menu item-->
+											<div class="menu-item">
+												<!--begin:Menu link-->
+												<a class="menu-link {% if u == 'student_list' %}active{% endif %}" href="{% url 'student_list' %}"  title="Ro'yxati" >
+													<span class="menu-bullet">
+														<span class="bullet bullet-dot"></span>
+													</span>
+													<span class="menu-title">Ro'yxati</span>
+												</a>
+												<!--end:Menu link-->
+											</div>
+											<!--end:Menu item-->
+										</div>
+										<!--end:Menu sub-->
+									</div>
+
+
+									<div data-kt-menu-trigger="click" class="menu-item  {% if u == 'statistic_group_registered' %} here show{% endif %} menu-accordion">
+										<!--begin:Menu link-->
+										<span class="menu-link">
+											<span class="menu-icon">
+												<i class="ki-outline ki-chart-simple-3 fs-2">
+												</i>
+											</span>
+											<span class="menu-title">Statistika</span>
+											<span class="menu-arrow"></span>
+										</span>
+										<!--end:Menu link-->
+										<!--begin:Menu sub-->
+										<div class="menu-sub menu-sub-accordion">
+
+
+
+											<div data-kt-menu-trigger="click" class="menu-item {% if u == 'statistic_group_registered' %} here show{% endif %} menu-accordion">
+												<!--begin:Menu link-->
+												<span class="menu-link">
+													<span class="menu-bullet">
+														<span class="bullet bullet-dot"></span>
+													</span>
+													<span class="menu-title">Guruh bo'yicha</span>
+													<span class="menu-arrow"></span>
+												</span>
+												<!--end:Menu link-->
+												<!--begin:Menu sub-->
+												<div class="menu-sub menu-sub-accordion menu-active-bg">
+													<div class="menu-item">
+														<!--begin:Menu link-->
+														<a class="menu-link {% if u == 'statistic_group_registered' %}active{% endif %}" href="{% url 'statistic_group_registered' %}"  title="Ro'yxati" >
+															<span class="menu-bullet">
+																<span class="bullet bullet-dot"></span>
+															</span>
+															<span class="menu-title">Ro'yxatdan o'tganlar</span>
+														</a>
+														<!--end:Menu link-->
+													</div>
+												</div>
+												<!--end:Menu sub-->
+											</div>
+
+
+											<!--begin:Menu item-->
+
+
+<!--											<div class="menu-item">-->
+<!--												&lt;!&ndash;begin:Menu link&ndash;&gt;-->
+<!--												<a class="menu-link {% if u == 'statistic_group_registered' %}active{% endif %}" href="{% url 'statistic_group_registered' %}"  title="Ro'yxati" >-->
+<!--													<span class="menu-bullet">-->
+<!--														<span class="bullet bullet-dot"></span>-->
+<!--													</span>-->
+<!--													<span class="menu-title">Guruh bo'yicha</span>-->
+<!--												</a>-->
+<!--												&lt;!&ndash;end:Menu link&ndash;&gt;-->
+<!--											</div>-->
+											<!--end:Menu item-->
+										</div>
+										<!--end:Menu sub-->
+									</div>
+
 									<div data-kt-menu-trigger="click" class="menu-item  {% if u == 'export_file_list' or u == 'setting_sync' or u == 'setting_user_list' %} here show{% endif %} menu-accordion">
 										<!--begin:Menu link-->
 										<span class="menu-link">
