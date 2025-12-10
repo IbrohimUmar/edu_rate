@@ -23,7 +23,6 @@ def student_list(request):
             users_qs = users_qs.filter(telegram_id__isnull=True)
     group_id = int(request.GET.get('group_id') or 0)
     if group_id != 0:
-        print(group_id)
         users_qs = users_qs.filter(student__group_id=group_id)
 
 

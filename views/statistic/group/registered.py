@@ -38,7 +38,6 @@ def statistic_group_registered(request):
         'id', 'name', 'code', 'department__name', 'total_students', 'registered_students', 'most_be_registered_count'
     )
     if export_to_excel:
-        print(export_to_excel)
         wb = openpyxl.Workbook()
         ws = wb.active
         ws.title = "KPI"
