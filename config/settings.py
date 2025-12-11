@@ -101,20 +101,46 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    # talabalar ro'yxatini sinxronlash 2 kunda 1 marta
-    ('* * */2 * *', 'services.sync_hemis.student.student_sync', '>> /home/wadmin/edu_rate/logs/student_sync.log'),
+    # ====================== HEMIS SYNC JOBLAR ======================
+    # Employee sync — her gün gece saat 00:00
+    ('0 0 * * *', 'services.sync_hemis.employee.employee_sync',
+     '>> /home/wadmin/edu_rate/logs/employee_sync.log'),
 
-    # xodimlar modelini sinxronlash 2 kunda 1 marta
-    ('* * */2 * *', 'services.sync_hemis.employee.employee_sync', '>> /home/wadmin/edu_rate/logs/employee_sync.log'),
+    # Student sync — 2 günde 1 kere gece saat 01:00
+    ('0 1 */2 * *', 'services.sync_hemis.student.student_sync',
+     '>> /home/wadmin/edu_rate/logs/student_sync.log'),
 
-    # ------------------------------Studenr kpi bot
-    # har 5 daqiqda 1 marta talabalarga
-    ('*/5 * * * *', 'services.schedule.schedule_point_notify.check_and_send_notifications', '>> /home/wadmin/edu_rate/logs/check_and_send_notifications.log'),
+    # Schedule sync — 07:00–22:00 arası her saat başı
+    ('0 7-22 * * *', 'services.sync_hemis.schedule.schedule_sync',
+     '>> /home/wadmin/edu_rate/logs/schedule_sync.log'),
 
-    # o'quv rejalarni hemi bilan synx qilish 10 kunda 1 marta ishlashi kerak
-    ('0 * * * *', 'services.sync_hemis.schedule.schedule_sync',  '>> /home/wadmin/edu_rate/logs/schedule_sync.log'),
-    ('0 0 * * *', 'services.sync_hemis.schedule.schedule_last_seven_days_sync',  '>> /home/wadmin/edu_rate/logs/schedule_last_seven_days_sync.log'),
+    # Last 7 days schedule sync — Her gece 03:00
+    ('0 3 * * *', 'services.sync_hemis.schedule.schedule_last_seven_days_sync',
+     '>> /home/wadmin/edu_rate/logs/schedule_last_seven_days_sync.log'),
+
+    # ====================== KPI NOTIFICATIONS ======================
+
+    # Har 5 dakikada bir notification
+    ('*/5 * * * *', 'services.schedule.schedule_point_notify.check_and_send_notifications',
+     '>> /home/wadmin/edu_rate/logs/check_and_send_notifications.log'),
 ]
+
+
+# CRONJOBS = [
+#     # talabalar ro'yxatini sinxronlash 2 kunda 1 marta
+#     ('* * */2 * *', 'services.sync_hemis.student.student_sync', '>> /home/wadmin/edu_rate/logs/student_sync.log'),
+#
+#     # xodimlar modelini sinxronlash 2 kunda 1 marta
+#     ('* * */2 * *', 'services.sync_hemis.employee.employee_sync', '>> /home/wadmin/edu_rate/logs/employee_sync.log'),
+#
+#     # ------------------------------Studenr kpi bot
+#     # har 5 daqiqda 1 marta talabalarga
+#     ('*/5 * * * *', 'services.schedule.schedule_point_notify.check_and_send_notifications', '>> /home/wadmin/edu_rate/logs/check_and_send_notifications.log'),
+#
+#     # o'quv rejalarni hemi bilan synx qilish 10 kunda 1 marta ishlashi kerak
+#     ('0 * * * *', 'services.sync_hemis.schedule.schedule_sync',  '>> /home/wadmin/edu_rate/logs/schedule_sync.log'),
+#     ('0 0 * * *', 'services.sync_hemis.schedule.schedule_last_seven_days_sync',  '>> /home/wadmin/edu_rate/logs/schedule_last_seven_days_sync.log'),
+# ]
 
 
 MIDDLEWARE = [
