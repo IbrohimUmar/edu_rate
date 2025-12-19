@@ -6,7 +6,7 @@ from rest_framework import serializers
 from django.utils import timezone
 from rest_framework import serializers
 
-from models.models.meta import Department, Subject, Group
+from models.models.meta import Department, Subject, Group, Auditorium, Building, AuditoriumType
 from models.models.schedule import Schedule
 from models.models.student_meta import StudentObjection
 from models.models.user import User
@@ -42,12 +42,34 @@ class StudentObjectionSerializer(serializers.ModelSerializer):
         model = StudentObjection
         fields = ['message']
 
+
+
+class BuildingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Building
+        fields = ['id', 'name']
+
+class AuditoriumTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AuditoriumType
+        fields = ['id', 'name', 'code']
+
+class AuditoriumObjectionSerializer(serializers.ModelSerializer):
+    building = BuildingSerializer()
+    auditorium_type = AuditoriumTypeSerializer()
+
+    class Meta:
+        model = Auditorium
+        fields = ['id', 'building', 'auditorium_type', 'name', 'code']
+
+
 class ScheduleSerializer(serializers.ModelSerializer):
     faculty = DepartmentListSerializer()
     department = DepartmentListSerializer()
     subject = SubjectSerializer()
     group = GroupSerializer()
     employee = CustomUserSerializer()
+    auditorium = AuditoriumObjectionSerializer()
 
     class Meta:
         model = Schedule

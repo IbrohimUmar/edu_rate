@@ -56,7 +56,7 @@ class AnswerInline(admin.TabularInline):
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
     list_display = ['hemis_id', 'group','subject', 'lesson_pair', 'lesson_date', 'week', 'employee',
-                    'group_student_count', 'group_student_login_count']
+                    'group_student_count', 'group_student_login_count', 'auditorium']
     list_filter = ['lesson_pair', 'lesson_date']
     search_fields = ['hemis_id']
 
