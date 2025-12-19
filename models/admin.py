@@ -94,3 +94,6 @@ class UserAdmin(admin.ModelAdmin):
         else:
             obj.password = user_database.password
         super().save_model(request, obj, form, change)
+
+    def has_change_permission(self, request, obj=None):
+        return False

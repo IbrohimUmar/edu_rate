@@ -1,6 +1,6 @@
 from django.db import models
 
-from models.models.meta import Subject, Semester, EducationYear, Group, Department, TrainingType, LessonPair
+from models.models.meta import Subject, Semester, EducationYear, Group, Department, TrainingType, LessonPair, Auditorium
 from models.models.survey import Survey
 from models.models.user import User
 
@@ -67,6 +67,12 @@ class Schedule(models.Model):
     )
     employee = models.ForeignKey(
         User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    auditorium = models.ForeignKey(
+        Auditorium,
         on_delete=models.SET_NULL,
         null=True,
         blank=True
