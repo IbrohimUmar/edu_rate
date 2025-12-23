@@ -139,6 +139,9 @@
                         <div class="d-flex flex-wrap align-items-center my-1">
                                         <h6 class="fw-bold me-5 my-1"> Soni : {{ queryset_count }} Ta </h6>
                         </div>
+
+<a href="?export=excel{% for key, value in request.GET.items %}&{{ key }}={{ value }}{% endfor %}" class=" btn btn-success">
+    <i class="fas fa-file-excel fs-2"></i> Export to Excel</a>
                 </div>
 
 
