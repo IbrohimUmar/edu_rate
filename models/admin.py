@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from .models.answer import Answer, AnswerDetail
 from .models.export_file import ExportFile
 from .models.user import User
-from .models.meta import Department, EducationForm, Group, EducationType, EmploymentForm, Subject
+from .models.meta import Department, EducationForm, Group, EducationType, EmploymentForm, Subject, LessonPair
 from .models.student_meta import StudentMeta
 from .models.employee_meta import EmployeeMeta
 from .models.schedule import Schedule
@@ -15,9 +15,9 @@ class DefaultAdmin(admin.ModelAdmin):
     pass
 
 
-
-
-
+@admin.register(LessonPair)
+class LessonPairAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'code']
 
 
 @admin.register(StudentMeta)

@@ -134,7 +134,7 @@ def get_student_list(page=1, limit=20, _education_form="", _education_type="", _
     params = f"?page={page}&limit={limit}&_education_form={_education_form}&_education_type={_education_type}&_payment_form={_payment_form}&_department={_department}&_group={_group}&_specialty={_specialty}&_level={_level}&_semester={_semester}&_province={_province}&_district={_district}&_gender={_gender}&_citizenship={_citizenship}&_student_status={_student_status}&search={search}&passport_pin={passport_pin}&passport_number={passport_number}"
     payload = {}
     try:
-        response = requests.request("GET", student_list_url_hemis + params, headers=headers, data=payload)
+        response = requests.request("GET", student_list_url_hemis + params, headers=headers, data=payload, timeout=14)
         response.raise_for_status()  # HTTP errors
         return response.json()
     except Timeout as e:

@@ -33,7 +33,7 @@ def get_schedule_list(page=1, limit=20, _faculty="", _group="", _week="", _semes
               f"&_employee={_employee}&_auditorium={_auditorium}&_lesson_pair={_lesson_pair}&lesson_date_from={lesson_date_from}&lesson_date_to={lesson_date_to}")
     payload = {}
     try:
-        response = requests.request("GET", employee_list_url_hemis + params, headers=headers, data=payload)
+        response = requests.request("GET", employee_list_url_hemis + params, headers=headers, data=payload, timeout=15)
         response.raise_for_status()  # HTTP errors
         return response.json()
     except Timeout as e:
@@ -42,6 +42,25 @@ def get_schedule_list(page=1, limit=20, _faculty="", _group="", _week="", _semes
     except RequestException as e:
         handle_exception(e)
         return {"code": 500, "error": str(e), 'success': False, 'data': {}}
+
+
+def get_or_merge_lesson_pair(code, name, start_time, end_time, education_year):
+    lookup = {
+        'code': code,
+        'name': name,
+        'start_time': start_time,
+        'end_time': end_time,
+        'education_year': education_year,
+    }
+    pairs = list(LessonPair.objects.filter(**lookup).order_by('id'))
+    if pairs:
+        primary = pairs[0]
+        if len(pairs) > 1:
+            duplicate_ids = [pair.id for pair in pairs[1:]]
+            Schedule.objects.filter(lesson_pair_id__in=duplicate_ids).update(lesson_pair=primary)
+            LessonPair.objects.filter(id__in=duplicate_ids).delete()
+        return primary, False
+    return LessonPair.objects.create(**lookup), True
 
 
 
@@ -67,12 +86,19 @@ def schedule_sync():
                                      lesson_date_to=to_date_unix)
         # response = get_schedule_list(page=page, limit=limit, _group=2147, lesson_date_from=from_date_unix, lesson_date_to=to_date_unix)
         # response = get_schedule_list(page=page, limit=limit)
-        data = response['data']
-        total_count = data['pagination']['totalCount']
-        print(data['pagination'])
+        data = response.get('data') or {}
+        pagination = data.get('pagination')
+        if not pagination or 'totalCount' not in pagination:
+            # handle_exception(Exception(
+            #     "Missing pagination in schedule response. "
+            #     f"code={response.get('code')} error={response.get('error')} keys={list(response.keys())}"
+            # ))
+            return False
+        total_count = pagination['totalCount']
+        print(pagination)
         try:
             with transaction.atomic():
-                for a in response['data']['items']:
+                for a in data.get('items', []):
                     subject, update = Subject.objects.update_or_create(
                         code=a['subject']['code'],
                         defaults={
@@ -161,12 +187,13 @@ def schedule_sync():
                     training_type = get_obj_or_create(TrainingType, a['trainingType']['code'],
                                                       a['trainingType']['name'])
 
-                    lesson_pair, update = LessonPair.objects.update_or_create(code=a['lessonPair']['code'],
-                                                                              name=a['lessonPair']['name'],
-                                                                              start_time=a['lessonPair']['start_time'],
-                                                                              end_time=a['lessonPair']['end_time'],
-                                                                              education_year=education_year,
-                                                                              )
+                    lesson_pair, update = get_or_merge_lesson_pair(
+                        code=a['lessonPair']['code'],
+                        name=a['lessonPair']['name'],
+                        start_time=a['lessonPair']['start_time'],
+                        end_time=a['lessonPair']['end_time'],
+                        education_year=education_year,
+                    )
 
                     try:
                         employee = User.objects.get(hemis_id=a['employee']['id'])
@@ -240,10 +267,17 @@ def schedule_last_seven_days_sync():
             lesson_date_from=from_date_unix,
             lesson_date_to=to_date_unix,
         )
-        data = response['data']
-        total_count = data['pagination']['totalCount']
-        print(f'schedule_sync_seven days pagination | {data['pagination']}')
-        for a in data['items']:
+        data = response.get('data') or {}
+        pagination = data.get('pagination')
+        if not pagination or 'totalCount' not in pagination:
+            # handle_exception(Exception(
+            #     "Missing pagination in schedule response. "
+            #     f"code={response.get('code')} error={response.get('error')} keys={list(response.keys())}"
+            # ))
+            return False
+        total_count = pagination['totalCount']
+        print(f"schedule_sync_seven days pagination | {pagination}")
+        for a in data.get('items', []):
             try:
                 # 🔸 har bir yozuvni o'zining kichik transaction ichida saqlaymiz
                 with transaction.atomic():
@@ -339,15 +373,14 @@ def schedule_last_seven_days_sync():
                         a['trainingType']['name'],
                     )
 
-                    lesson_pair, _ = LessonPair.objects.update_or_create(
+                    lesson_pair, _ = get_or_merge_lesson_pair(
                         code=a['lessonPair']['code'],
-                        defaults={
-                            'name': a['lessonPair']['name'],
-                            'start_time': a['lessonPair']['start_time'],
-                            'end_time': a['lessonPair']['end_time'],
-                            'education_year': education_year,
-                        },
+                        name=a['lessonPair']['name'],
+                        start_time=a['lessonPair']['start_time'],
+                        end_time=a['lessonPair']['end_time'],
+                        education_year=education_year,
                     )
+
 
                     employee = User.objects.get(hemis_id=a['employee']['id'])
 
