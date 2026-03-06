@@ -2,9 +2,11 @@ import io, datetime
 from threading import Thread
 
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 from django.core.paginator import Paginator
+from django.urls import reverse
 from django.utils.timezone import now
 
 from django.contrib.auth.decorators import login_required
@@ -74,7 +76,21 @@ def survey_schedule_list(request, id):
         thread = Thread(target=export_file_schedule_format1_manager, args=(schedules, survey, request.user))
         thread.start()
         messages.success(request, "Fayl eksport qilinmoqda..")
-        return redirect('survey_schedule_list', id)
+        # return redirect('survey_schedule_list', id)
+
+        url = reverse('survey_schedule_list', args=[id])
+
+        # Mevcut GET parametrelerini (from_date, to_date vs.) koru
+        # Ancak 'export' parametresini URL'den temizleyelim ki sonsuz döngüye girmesin
+        params = request.GET.copy()
+        if 'export' in params:
+            del params['export']
+
+        query_string = params.urlencode()
+        full_url = f"{url}?{query_string}" if query_string else url
+
+        return HttpResponseRedirect(full_url)
+
 
     page = request.GET.get('page', 1)
     paginator = Paginator(schedules, 50)  # sahifada 25 ta qator
