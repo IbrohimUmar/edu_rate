@@ -66,9 +66,19 @@
                             <!--begin::Compact form-->
                             <div class="d-flex align-items-center">
                                 <div class="position-relative w-md-400px me-md-2">
-                                    <h5 class="text-muted mb-0">Dars sanasi</h5>
-                                    <input type="date" {% if selected_date is not None %}value="{{ selected_date|date:'Y-m-d' }}"{% endif %} placeholder="Pick date rage" class="form-control form-control-solid "
-                                    name="date">
+                                    <h5 class="text-muted mb-0">Dars sanasidan</h5>
+<!--                                    <input type="date" {% if selected_date is not None %}value="{{ selected_date|date:'Y-m-d' }}"{% endif %} placeholder="Pick date rage" class="form-control form-control-solid "-->
+<!--                                    name="date">-->
+                                    <input type="date" id="from_date" name="from_date" value="{{ request.GET.from_date }}" class="form-control form-control-solid">
+
+
+                                </div>
+                                <div class="position-relative w-md-400px me-md-2">
+                                    <h5 class="text-muted mb-0">Dars sanasigacha</h5>
+                                            <input type="date" id="to_date" name="to_date" value="{{ request.GET.to_date }}" class="form-control form-control-solid ">
+
+<!--                                    <input type="date" {% if selected_date is not None %}value="{{ selected_date|date:'Y-m-d' }}"{% endif %} placeholder="Pick date rage" class="form-control form-control-solid "-->
+<!--                                    name="date">-->
 
                                 </div>
                                 <div class="position-relative w-md-400px me-md-2">

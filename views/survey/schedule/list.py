@@ -52,12 +52,21 @@ def survey_schedule_list(request, id):
             schedules = schedules.filter(answer_send_count_qs__gt=0)
         else:
             schedules = schedules.exclude(answer_send_count_qs__gt=0)
+
+    from_date = request.GET.get('from_date')  # '2023-10-01' formatında geldiğini varsayıyorum
+    to_date = request.GET.get('to_date')
+    if from_date:
+        schedules = schedules.filter(lesson_date__gte=from_date)
+    if to_date:
+        schedules = schedules.filter(lesson_date__date__lte=to_date)
+
     if search_query:
         schedules = schedules.filter(
             Q(employee__first_name__icontains=search_query) |
             Q(employee__second_name__icontains=search_query) |
             Q(employee__third_name__icontains=search_query)
         )
+
     if export_to_excel:
         # data = export_file_schedule_format1_data_format(schedules, survey)
         # return export_file_schedule_format1_export_excel(data, survey)
