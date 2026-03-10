@@ -258,7 +258,7 @@ def schedule_last_seven_days_sync():
     from_date_unix = int(time.mktime(from_date.timetuple()))
     to_date_unix = int(time.mktime(to_date.timetuple()))
 
-    print(f'schedule_sync cronjob | unix from={from_date_unix}, to={to_date_unix}')
+    print(f'schedule_last_seven_days_sync cronjob | unix from={from_date_unix}, to={to_date_unix}')
 
     while total_count is None or (page - 1) * limit < total_count:
         response = get_schedule_list(
@@ -382,7 +382,14 @@ def schedule_last_seven_days_sync():
                     )
 
 
-                    employee = User.objects.get(hemis_id=a['employee']['id'])
+                    # employee = User.objects.get(hemis_id=a['employee']['id'])
+
+                    try:
+                        employee = User.objects.get(hemis_id=a['employee']['id'])
+                    except ObjectDoesNotExist as e:
+                        handle_exception(e)
+                        continue
+
 
                     lesson_date = timestamp_to_datetime(a['lesson_date']).date()
                     start_hour, start_minute = map(int, a['lessonPair']['start_time'].split(":"))

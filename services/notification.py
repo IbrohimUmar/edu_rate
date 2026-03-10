@@ -19,7 +19,8 @@ def notify_trancaction_error(message_title, error_text):
         f"<b>Project : EduRate : {UNIVERSITY_SHORT_NAME}</b>\n"
         f"<b>Error name : {message_title}</b>\n"
                f"<pre>{error_text}</pre>")
-    send_message(message)
+    print(message)
+    # send_message(message)
 
 
 def send_message(message):
